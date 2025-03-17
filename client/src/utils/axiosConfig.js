@@ -17,8 +17,11 @@
 import axios from "axios";
 
 // Set the base URL for all requests
-axios.defaults.baseURL = "http://localhost:5500"; // Replace with your backend URL
-
+//axios.defaults.baseURL = "http://localhost:5500"; // Replace with your backend URL
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "production"
+    ? "https://ticket-mon-v-2.railway.internal:5500" // Internal Railway URL for production
+    : "http://localhost:5500"; // Local development URL
 // Include credentials if needed (optional)
 axios.defaults.withCredentials = true;
 

@@ -91,12 +91,17 @@ import { Server } from "socket.io"; // Import Socket.IO
 import { authenticateSocket } from "./middlewares/socketAuth.middleware.js";
 
 const app = express();
-const server = createServer(app); // Create HTTP Server
+const server = createServer(app);
+
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? ["https://fabulous-harmony-production.up.railway.app"]
+    : ["http://localhost:3000"];
 
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Adjust for frontend
+    origin: allowedOrigins, // Adjust for frontend
     credentials: true,
   },
 });
@@ -104,7 +109,7 @@ const io = new Server(server, {
 // Enable CORS
 app.use(
   cors({
-    origin: "http://localhost:3000", // Allow requests from your React frontend
+    origin: allowedOrigins, // Allow requests from your React frontend
     credentials: true, // Allow cookies and credentials
   })
 );

@@ -17,14 +17,19 @@ export const initializeSocket = () => {
   }
 
   // Create a new socket connection
-  socket = io("http://localhost:5500", {
-    auth: {
-      token: `${token}`, // Send JWT token for authentication
-    },
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 2000,
-  });
+  socket = io(
+    process.env.NODE_ENV === "production"
+      ? "https://ticket-mon-v-2.railway.internal:5500" // Internal Railway URL for production
+      : "http://localhost:5500",
+    {
+      auth: {
+        token: `${token}`, // Send JWT token for authentication
+      },
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000,
+    }
+  );
 
   return socket;
 };
