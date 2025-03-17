@@ -1,0 +1,297 @@
+POST /api/v1/auth/sign-up
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "johndoe@example.com",
+  "password": "password123",
+  "role": "user"
+}
+
+
+
+
+{
+  "success": true,
+  "message": "User created successfully",
+  "data": {
+    "token": "jwt_token_here",
+    "user": {
+      "_id": "65f123abcd456",
+      "name": "John Doe",
+      "email": "johndoe@example.com",
+      "role": "user"
+    }
+  }
+}
+
+
+POST /api/v1/auth/sign-in
+Content-Type: application/json
+
+{
+  "email": "johndoe@example.com",
+  "password": "password123"
+}
+
+{
+  "success": true,
+  "message": "User signed in successfully",
+  "data": {
+    "token": "jwt_token_here",
+    "user": {
+      "_id": "65f123abcd456",
+      "name": "John Doe",
+      "email": "johndoe@example.com",
+      "role": "user"
+    }
+  }
+}
+
+
+GET /api/v1/users/
+Authorization: Bearer admin_token_here
+Content-Type: application/json
+
+
+
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "67c4ad08485a3c9d0477c56f",
+      "name": "alex alexo",
+      "email": "alex@gmail.com",
+      "password": "$2b$10$314KgYqDUaA5DlX9B1iPBOCHLnc4H./scWYhiErFpM77bw0raszsu",
+      "createdAt": "2025-03-02T19:10:00.270Z",
+      "updatedAt": "2025-03-02T19:10:00.270Z",
+      "__v": 0,
+      "role": "admin"
+    },
+    {
+      "_id": "67c54ae0ae19d92aaab54564",
+      "name": "alex2 alex0",
+      "email": "alex2@gmail.com",
+      "password": "$2b$10$x8rfNK0QA4TcWcIRvki85uDRY3gRWK9pvU.PE/Dr.xEX2yWWnvo/W",
+      "role": "support_agent",
+      "createdAt": "2025-03-03T06:23:29.007Z",
+      "updatedAt": "2025-03-03T07:22:31.072Z",
+      "__v": 0
+    },
+    {
+      "_id": "67c562494682f0e389626389",
+      "name": "John Doe",
+      "email": "johndoe@example.com",
+      "password": "$2b$10$6AGPEVyG.wSFln8kCl6KFu8Q/osxssGZWmEGW42szoXmkhphVr.1S",
+      "role": "user",
+      "createdAt": "2025-03-03T08:03:21.113Z",
+      "updatedAt": "2025-03-03T08:03:21.113Z",
+      "__v": 0
+    }
+  ]
+}
+
+GET /api/v1/users/67c562494682f0e389626389
+Authorization: Bearer token_here
+Content-Type: application/json
+
+{
+  "success": true,
+  "data": {
+    "_id": "67c562494682f0e389626389",
+    "name": "John Doe",
+    "email": "johndoe@example.com",
+    "role": "user",
+    "createdAt": "2025-03-03T08:03:21.113Z",
+    "updatedAt": "2025-03-03T08:03:21.113Z",
+    "__v": 0
+  }
+}
+
+
+
+
+
+POST /api/v1/tickets/
+Authorization: Bearer jwt_token_here
+Content-Type: application/json
+
+{
+  "title": "Cannot access my account",
+  "description": "I am unable to log into my account even after resetting the password.",
+  "priority": "High",
+  "category": "Technical"
+}
+
+
+
+{
+  "success": true,
+  "message": "Ticket created successfully",
+  "data": {
+    "_id": "65fabc789xyz",
+    "title": "Cannot access my account",
+    "description": "I am unable to log into my account even after resetting the password.",
+    "priority": "High",
+    "category": "Technical",
+    "status": "Open",
+    "created_by": "65f123abcd456",
+    "assigned_to": null
+  }
+}
+
+
+
+
+GET /api/v1/tickets/
+Authorization: Bearer jwt_token_here
+
+
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "65fabc789xyz",
+      "title": "Cannot access my account",
+      "status": "Open",
+      "priority": "High",
+      "category": "Technical",
+      "created_by": {
+        "name": "John Doe",
+        "email": "johndoe@example.com"
+      }
+    }
+  ]
+}
+
+
+
+
+
+GET /api/v1/tickets/65fabc789xyz
+Authorization: Bearer jwt_token_here
+
+
+{
+  "success": true,
+  "data": {
+    "_id": "65fabc789xyz",
+    "title": "Cannot access my account",
+    "description": "I am unable to log into my account even after resetting the password.",
+    "priority": "High",
+    "category": "Technical",
+    "status": "Open",
+    "created_by": {
+      "name": "John Doe",
+      "email": "johndoe@example.com"
+    },
+    "assigned_to": null,
+    "comments": []
+  }
+}
+
+
+
+
+PUT /api/v1/tickets/65fabc789xyz
+Authorization: Bearer jwt_token_here
+Content-Type: application/json
+
+{
+  "title": "Login Issue Resolved",
+  "description": "I found the issue and resolved it. No further action needed.",
+  "priority": "Low"
+}
+
+
+{
+  "success": true,
+  "message": "Ticket updated successfully",
+  "data": {
+    "_id": "65fabc789xyz",
+    "title": "Login Issue Resolved",
+    "description": "I found the issue and resolved it. No further action needed.",
+    "priority": "Low",
+    "status": "Open"
+  }
+}
+
+
+
+PUT /api/v1/tickets/65fabc789xyz/status
+Authorization: Bearer admin_token_here
+Content-Type: application/json
+
+{
+  "status": "In Progress"
+}
+
+
+{
+  "success": true,
+  "message": "Ticket updated successfully",
+  "data": {
+    "_id": "65fabc789xyz",
+    "title": "Login Issue Resolved",
+    "status": "In Progress"
+  }
+}
+
+
+PUT /api/v1/tickets/65fabc789xyz/assign
+Authorization: Bearer admin_token_here
+Content-Type: application/json
+
+{
+  "assigned_to": "65fagent456xyz"
+}
+
+
+
+{
+  "success": true,
+  "message": "Ticket assigned successfully",
+  "data": {
+    "_id": "65fabc789xyz",
+    "title": "Login Issue Resolved",
+    "assigned_to": "65fagent456xyz"
+  }
+}
+
+
+POST /api/v1/tickets/65fabc789xyz/comments
+Authorization: Bearer jwt_token_here
+Content-Type: application/json
+
+{
+  "text": "I have attached additional screenshots for the issue."
+}
+
+
+
+{
+  "success": true,
+  "message": "Comment added successfully",
+  "data": {
+    "_id": "65fabc789xyz",
+    "comments": [
+      {
+        "text": "I have attached additional screenshots for the issue.",
+        "created_by": "65f123abcd456",
+        "createdAt": "2025-03-03T12:34:56.789Z"
+      }
+    ]
+  }
+}
+
+
+DELETE /api/v1/tickets/65fabc789xyz
+Authorization: Bearer admin_token_here
+
+
+
+{
+  "success": true,
+  "message": "Ticket deleted successfully"
+}
+
