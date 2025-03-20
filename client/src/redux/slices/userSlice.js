@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   users: [],
+  userstatus: "idle",
 };
 
 const userSlice = createSlice({
@@ -11,6 +12,7 @@ const userSlice = createSlice({
   reducers: {
     getUsersContent: (state, action) => {
       state.users = action.payload;
+      state.userstatus = "loaded";
     },
     deleteUser: (state, action) => {
       state.users = state.users.filter((user) => user._id !== action.payload);

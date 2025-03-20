@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   tickets: [],
+  ticketstatus: "idle",
 };
 
 const ticketSlice = createSlice({
@@ -10,6 +11,7 @@ const ticketSlice = createSlice({
   reducers: {
     getTickets: (state, action) => {
       state.tickets = action.payload;
+      state.ticketstatus = "loaded";
     },
     addTicket: (state, action) => {
       state.tickets.push(action.payload);

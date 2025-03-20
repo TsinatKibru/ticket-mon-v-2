@@ -14,8 +14,21 @@ const errorMiddleware = (err, req, res, next) => {
     }
 
     // Mongoose duplicate key
+    // if (err.code === 11000) {
+    //   console.log(err);
+    //   const message = "Duplicate field value entered";
+    //   error = new Error(message);
+    //   error.statusCode = 400;
+    // }
     if (err.code === 11000) {
-      const message = "Duplicate field value entered";
+      let message = "Duplicate field value entered";
+
+      if (err.keyValue) {
+        const field = Object.keys(err.keyValue)[0];
+        const value = err.keyValue[field];
+        message = `A record with the ${field} '${value}' already exists.`;
+      }
+
       error = new Error(message);
       error.statusCode = 400;
     }

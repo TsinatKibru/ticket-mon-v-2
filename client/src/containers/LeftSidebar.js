@@ -4,6 +4,7 @@ import SidebarSubmenu from "./SidebarSubmenu";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { routes } from "../utils/routes";
 import { connect } from "react-redux";
+import { Boxes } from "lucide-react";
 
 class LeftSidebar extends Component {
   componentWillUnmount() {
@@ -22,10 +23,10 @@ class LeftSidebar extends Component {
     return (
       <div className="drawer-side z-30">
         <label htmlFor="left-sidebar-drawer" className="drawer-overlay"></label>
-        <ul className="menu pt-2 w-80 bg-base-100 min-h-full text-base-content">
+        <ul className="menu pt-2 w-64 bg-base-100 min-h-full text-base-content">
           {/* Close button */}
           <button
-            className="btn btn-ghost bg-base-300 btn-circle z-50 top-0 right-0 mt-4 mr-2 absolute lg:hidden"
+            className="btn btn-ghost bg-base-300 btn-circle z-50 top-0 right-0 mt-2 mr-2 absolute lg:hidden"
             onClick={this.closeSidebar}
           >
             <XMarkIcon className="h-5 w-5 inline-block" />
@@ -33,14 +34,10 @@ class LeftSidebar extends Component {
 
           {/* Logo and Title */}
           <li className="mb-2 font-semibold text-xl">
-            <Link to="/app/welcome">
-              <img
-                className="mask mask-squircle w-10"
-                src="/logoshortcut.png"
-                alt="TicketMon Logo"
-              />
-              TicketMon
-            </Link>
+            <div className="flex items-center gap-2">
+              <Boxes className="h-8 w-8 text-purple-800" />
+              <span className="text-xl font-bold ">TaskFlow</span>
+            </div>
           </li>
 
           {/* Sidebar Menu Items */}

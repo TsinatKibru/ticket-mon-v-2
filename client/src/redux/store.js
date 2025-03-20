@@ -6,6 +6,7 @@ import modalReducer from "./slices/modalSlice";
 import userSlice from "./slices/userSlice";
 import ticketSlice from "./slices/ticketSlice";
 import notificationSlice from "./slices/notificationSlice";
+import departmentsSlice from "./slices/departmentsSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     user: userSlice,
     ticket: ticketSlice,
     notification: notificationSlice,
+    departments: departmentsSlice,
   },
 });
 

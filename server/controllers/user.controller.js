@@ -118,3 +118,43 @@ export const uploadProfileImage = async (req, res, next) => {
     next(error);
   }
 };
+
+export const searchUsers = async (req, res, next) => {
+  try {
+    const { name, email, role, department } = req.query;
+
+    console.log(req.query);
+
+    // Build the search query
+    const query = {};
+
+    if (name) {
+      query.name = { $regex: name, $options: "i" }; // Case-insensitive partial match
+    }
+
+    if (email) {
+      query.email = { $regex: email, $options: "i" }; // Case-insensitive partial match
+    }
+
+    if (role) {
+      query.role = role; // Exact match for role
+    }
+
+    if (department) {
+      query.department = department; // Exact match for department
+    }
+
+    // Execute the search query
+    const users = await User.find(query)
+      .select("-password") // Exclude the password field
+      .populate("department", "name"); // Populate department details
+
+    res.status(200).json({
+      success: true,
+      message: "Users retrieved successfully",
+      data: users,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

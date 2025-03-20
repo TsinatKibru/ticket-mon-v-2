@@ -6,6 +6,13 @@ import fs from "fs";
 import url from "url";
 import { io } from "../app.js";
 import { generateNotificationMessage } from "../utils/notifications.util.js";
+import Department from "../models/department.model.js";
+import {
+  leastRecentlyAssigned,
+  loadBalancing,
+  roundRobin,
+} from "../utils/assignmentAlgorithms.js";
+import { Types } from "mongoose";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -60,7 +67,15 @@ export const getTickets = async (req, res, next) => {
 
     const tickets = await Ticket.find(query)
       .populate("created_by", "name email")
-      .populate("assigned_to", "name email");
+      .populate("assigned_to", "name email")
+      .populate({
+        path: "comments.created_by",
+        select: "name email",
+      })
+      .populate({
+        path: "comments.replies.created_by",
+        select: "name email",
+      });
 
     res.status(200).json({ success: true, data: tickets });
   } catch (error) {
@@ -72,7 +87,15 @@ export const getTicket = async (req, res, next) => {
   try {
     const ticket = await Ticket.findById(req.params.id)
       .populate("created_by", "name email")
-      .populate("assigned_to", "name email");
+      .populate("assigned_to", "name email")
+      .populate({
+        path: "comments.created_by",
+        select: "name email",
+      })
+      .populate({
+        path: "comments.replies.created_by",
+        select: "name email",
+      });
 
     if (!ticket) {
       return res
@@ -126,6 +149,14 @@ export const updateTicket = async (req, res, next) => {
     await ticket.save();
     await ticket.populate("created_by", "name email");
     await ticket.populate("assigned_to", "name email");
+    await ticket.populate({
+      path: "comments.created_by",
+      select: "name email",
+    });
+    await ticket.populate({
+      path: "comments.replies.created_by",
+      select: "name email",
+    });
 
     res.status(200).json({
       success: true,
@@ -240,9 +271,65 @@ export const assignTicket = async (req, res, next) => {
   }
 };
 
+// export const addComment = async (req, res, next) => {
+//   try {
+//     const { text } = req.body;
+
+//     // Check if the comment text is empty
+//     if (!text || text.trim().length === 0) {
+//       return res
+//         .status(400)
+//         .json({ success: false, message: "Comment cannot be empty" });
+//     }
+
+//     const ticket = await Ticket.findById(req.params.id);
+
+//     if (!ticket) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Ticket not found" });
+//     }
+
+//     const newComment = { text, created_by: req.user._id };
+//     ticket.comments.push(newComment);
+//     await ticket.save();
+
+//     // const notificationMessage = `<strong>${req.user.name}</strong> added a new comment to ticket: <em>"${ticket.title}"</em>.`;
+//     const notificationMessage = generateNotificationMessage({
+//       type: "comment",
+//       reqUser: req.user,
+//       ticket: ticket,
+//       commentText: text, // Assuming 'text' is the comment content
+//     });
+
+//     if (!ticket.created_by._id.equals(req.user._id)) {
+//       io.to(ticket.created_by._id.toString()).emit("newComment", {
+//         message: notificationMessage,
+//         ticket,
+//         comment: newComment,
+//       });
+//     }
+
+//     if (ticket.assigned_to && !ticket.assigned_to._id.equals(req.user._id)) {
+//       io.to(ticket.assigned_to._id.toString()).emit("newComment", {
+//         message: notificationMessage,
+//         ticket,
+//         comment: newComment,
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Comment added successfully",
+//       data: ticket,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 export const addComment = async (req, res, next) => {
   try {
-    const { text } = req.body;
+    const { text, parentCommentId } = req.body;
 
     // Check if the comment text is empty
     if (!text || text.trim().length === 0) {
@@ -259,23 +346,58 @@ export const addComment = async (req, res, next) => {
         .json({ success: false, message: "Ticket not found" });
     }
 
-    const newComment = { text, created_by: req.user._id };
-    ticket.comments.push(newComment);
-    await ticket.save();
+    if (parentCommentId) {
+      // This is a reply to an existing comment
+      const parentComment = ticket.comments.id(parentCommentId);
+      if (!parentComment) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Parent comment not found" });
+      }
 
-    // const notificationMessage = `<strong>${req.user.name}</strong> added a new comment to ticket: <em>"${ticket.title}"</em>.`;
+      const reply = {
+        text,
+        created_by: req.user._id,
+      };
+      parentComment.replies.push(reply);
+    } else {
+      // This is a new top-level comment
+      const newComment = { text, created_by: req.user._id };
+      ticket.comments.push(newComment);
+    }
+
+    await ticket.save();
+    await ticket.populate("created_by", "name email");
+    await ticket.populate("assigned_to", "name email");
+    await ticket.populate({
+      path: "comments.created_by",
+      select: "name email",
+    });
+    await ticket.populate({
+      path: "comments.replies.created_by",
+      select: "name email",
+    });
+
+    // Generate notification message
     const notificationMessage = generateNotificationMessage({
       type: "comment",
       reqUser: req.user,
       ticket: ticket,
-      commentText: text, // Assuming 'text' is the comment content
+      commentText: text,
     });
 
+    const notecomment = {
+      text,
+      created_by: req.user,
+    };
+
+    // Notify the ticket creator and assigned user
     if (!ticket.created_by._id.equals(req.user._id)) {
       io.to(ticket.created_by._id.toString()).emit("newComment", {
         message: notificationMessage,
         ticket,
-        comment: newComment,
+        comment: notecomment,
+        parentCommentId,
       });
     }
 
@@ -283,7 +405,8 @@ export const addComment = async (req, res, next) => {
       io.to(ticket.assigned_to._id.toString()).emit("newComment", {
         message: notificationMessage,
         ticket,
-        comment: newComment,
+        comment: notecomment,
+        parentCommentId,
       });
     }
 
@@ -296,7 +419,6 @@ export const addComment = async (req, res, next) => {
     next(error);
   }
 };
-
 export const deleteTicket = async (req, res, next) => {
   try {
     if (req.user.role !== "admin") {
@@ -426,6 +548,91 @@ export const deleteAttachment = async (req, res, next) => {
     });
   } catch (error) {
     console.error(`[ERROR] Failed to delete attachment: ${error.message}`);
+    next(error);
+  }
+};
+
+export const autoAssignTicket = async (req, res, next) => {
+  try {
+    if (req.user.role !== "admin") {
+      return res
+        .status(403)
+        .json({ success: false, message: "Unauthorized to assign tickets" });
+    }
+
+    const isValidObjectId = (id) => Types.ObjectId.isValid(id);
+
+    const { departmentId } = req.body;
+    if (!isValidObjectId(departmentId)) {
+      return res
+        .status(400)
+        .json({ message: "Bad Request: Invalid department ID format" });
+    }
+    const ticket = await Ticket.findById(req.params.id);
+
+    if (!ticket) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Ticket not found" });
+    }
+
+    const department = await Department.findById(departmentId).populate(
+      "users"
+    );
+    if (!department) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Department not found" });
+    }
+    if (department.users.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No users available in the department",
+      });
+    }
+
+    let assignedUserId;
+
+    switch (department.assignmentAlgorithm) {
+      case "roundRobin":
+        assignedUserId = roundRobin(
+          department.users,
+          department.lastAssignedUserId
+        );
+        break;
+      case "leastRecentlyAssigned":
+        assignedUserId = await leastRecentlyAssigned(department.users);
+        break;
+      case "loadBalancing":
+        assignedUserId = await loadBalancing(department.users);
+        break;
+      default:
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid assignment algorithm" });
+    }
+
+    if (!assignedUserId) {
+      return res.status(400).json({
+        success: false,
+        message: "No users available in the department",
+      });
+    }
+
+    // Update the ticket and department
+    ticket.assigned_to = assignedUserId;
+    ticket.department = departmentId;
+    await ticket.save();
+
+    department.lastAssignedUserId = assignedUserId; // For Round Robin
+    await department.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Ticket assigned successfully",
+      data: ticket,
+    });
+  } catch (error) {
     next(error);
   }
 };

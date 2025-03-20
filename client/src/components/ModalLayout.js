@@ -9,6 +9,7 @@ import AssignTicketModalBody from "./AssignTicketModalBody";
 import UpdateTicketStatus from "./UpdateTicketStatus";
 import AddTicketModalBody from "./AddTicketModalBody";
 import UpdateTicketModalBody from "./UpdateTicketModalBody";
+import AutoAssignTicketModalBody from "./AutoAssignTicketModalBody";
 
 class ModalLayout extends Component {
   close = (e) => {
@@ -46,6 +47,12 @@ class ModalLayout extends Component {
                 ),
                 [MODAL_BODY_TYPES.ASSIGN_TICKET]: (
                   <AssignTicketModalBody
+                    closeModal={this.close}
+                    extraObject={extraObject}
+                  />
+                ),
+                [MODAL_BODY_TYPES.AUTO_ASSIGN_TICKET]: (
+                  <AutoAssignTicketModalBody
                     closeModal={this.close}
                     extraObject={extraObject}
                   />

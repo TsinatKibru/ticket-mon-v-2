@@ -34,7 +34,6 @@ class Header extends Component {
   }
 
   openNotification = () => {
-    console.log("klavbwe");
     this.props.openRightDrawer({
       header: "Notifications",
       bodyType: RIGHT_DRAWER_TYPES.NOTIFICATION,
@@ -83,6 +82,7 @@ class Header extends Component {
     const { currentTheme, profileImage } = this.state;
     const { user } = this.props.auth;
     const { notifications } = this.props;
+    const { pageTitle } = this.props;
 
     return (
       <>
@@ -95,7 +95,7 @@ class Header extends Component {
             >
               <Bars3Icon className="h-5 inline-block w-5" />
             </label>
-            <h1 className="text-2xl font-semibold ml-2">{""}</h1>
+            <h1 className="text-xl  ml-2">{pageTitle}</h1>
           </div>
 
           <div className="flex-none">
@@ -124,14 +124,6 @@ class Header extends Component {
               className="btn btn-ghost ml-4 btn-circle"
               onClick={this.openNotification}
             >
-              {/* <div className="indicator">
-                <BellIcon className="h-6 w-6" />
-                {notifications.length > 0 && (
-                  <span className="badge badge-error badge-sm">
-                    {notifications.length}
-                  </span>
-                )}
-              </div> */}
               <div className="indicator">
                 <BellIcon className="h-6 w-6" />
                 {notifications.length > 0 ? (
@@ -194,6 +186,7 @@ const mapStateToProps = (state) => ({
   users: state.user.users,
   auth: state.auth,
   notifications: state.notification.notifications,
+  pageTitle: state.header.pageTitle,
 });
 
 const mapDispatchToProps = {

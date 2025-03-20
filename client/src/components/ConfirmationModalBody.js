@@ -9,26 +9,27 @@ import { deleteUser } from "../redux/slices/userSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
+import { deleteDepartment } from "../redux/slices/departmentsSlice";
 
 function ConfirmationModalBody({ extraObject, closeModal }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const { status } = useSelector((state) => state.departments);
 
-  const { ticketId, type, message } = extraObject;
-  const tickets = useSelector((state) => state.ticket.tickets); // Access tickets from Redux state
-
+  const { ticketId, type, message, depId } = extraObject;
+  console.log("type", type);
   const proceedWithYes = async () => {
     setLoading(true);
 
     try {
-      if (type === CONFIRMATION_MODAL_CLOSE_TYPES.TICKET_DELETE) {
+      if (ticketId && type === CONFIRMATION_MODAL_CLOSE_TYPES.TICKET_DELETE) {
         const response = await deleteTicketsAPi(ticketId);
         if (response.success === true) {
           dispatch(deleteTicket(ticketId));
           toast.success(`Ticket deleted successfully!`);
           closeModal();
         } else {
-          toast.error(`Failed to delete ticket: ${response.message}`);
+          toast.error(`Failed to deletjlsde ticket: ${response.message}`);
         }
       }
 
@@ -44,6 +45,10 @@ function ConfirmationModalBody({ extraObject, closeModal }) {
         } else {
           toast.error(`Failed to delete user: ${response.message}`);
         }
+      }
+      if (type === CONFIRMATION_MODAL_CLOSE_TYPES.DEP_DELETE) {
+        dispatch(deleteDepartment(depId));
+        closeModal();
       }
     } catch (error) {
       toast.error(`An error occurred: ${error.message}`);

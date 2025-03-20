@@ -5,6 +5,7 @@ import axios from "../utils/axiosConfig";
 import { setUser, setLoading, setError } from "../redux/slices/authSlice";
 import { getTickets } from "../redux/slices/ticketSlice";
 import { getUsersContent } from "../redux/slices/userSlice";
+import { fetchDepartments } from "../redux/slices/departmentsSlice";
 
 const useInitializeAuth = () => {
   const dispatch = useDispatch();
@@ -30,8 +31,11 @@ const useInitializeAuth = () => {
           dispatch(getUsersContent(usersResponse.data.data));
 
           // Fetch all tickets
+
           const ticketsResponse = await axios.get("/api/v1/tickets");
           dispatch(getTickets(ticketsResponse.data.data));
+
+          dispatch(fetchDepartments());
 
           dispatch(setLoading(false));
         } catch (error) {

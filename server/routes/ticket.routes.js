@@ -10,6 +10,7 @@ import {
   deleteTicket,
   addAttachment,
   deleteAttachment,
+  autoAssignTicket,
 } from "../controllers/ticket.controller.js";
 import authorize from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.js";
@@ -22,6 +23,7 @@ ticketRouter.get(
   authorize(["admin", "support_agent", "user"]),
   getTickets
 );
+ticketRouter.post("/:id/autoassign", authorize(["admin"]), autoAssignTicket);
 ticketRouter.get(
   "/:id",
   authorize(["admin", "support_agent", "user"]),
@@ -44,6 +46,7 @@ ticketRouter.put(
   updateTicketStatus
 );
 ticketRouter.put("/:id/assign", authorize(["admin"]), assignTicket);
+
 ticketRouter.post(
   "/:id/comments",
   authorize(["user", "support_agent", "admin"]),

@@ -54,6 +54,7 @@ export const authorize =
 
       // Prevent non-admin users from accessing another user's data
       if (req.params.id) {
+        console.log(req.params.id);
         if (!isValidObjectId(req.params.id)) {
           console.log("Invalid req.params.id detected:", req.params.id);
           return res

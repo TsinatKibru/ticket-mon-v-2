@@ -28,8 +28,14 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "support_agent", "admin"],
       default: "user",
     },
+
     profileImage: {
       type: String, // Store the URL or file path
+      default: null,
+    },
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
       default: null,
     },
   },

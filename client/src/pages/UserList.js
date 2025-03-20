@@ -20,6 +20,7 @@ import { showNotification } from "../redux/slices/headerSlice";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AlertCircle, Plus } from "lucide-react";
 
 class UserList extends Component {
   async componentDidMount() {
@@ -28,7 +29,7 @@ class UserList extends Component {
       this.props.getUsersContent(response);
     }
     this.props.setPageTitle({
-      title: "/app/users/",
+      title: "Users List",
     });
   }
 
@@ -77,7 +78,7 @@ class UserList extends Component {
   };
 
   render() {
-    const { users } = this.props;
+    const { users, userstatus } = this.props;
     const { user } = this.props.auth;
     const currentUser = user;
 
@@ -110,61 +111,105 @@ class UserList extends Component {
                 </tr>
               </thead>
               <tbody>
-                {users != null &&
-                  users.map((user, k) => (
-                    <tr key={k}>
-                      <td>
-                        <div className="flex items-center space-x-3">
-                          <div className="avatar">
-                            <div className="mask mask-squircle w-12 h-12">
-                              <img
-                                src={
-                                  user.profileImage ||
-                                  "https://reqres.in/img/faces/1-image.jpg"
-                                }
-                                alt="Avatar"
-                              />
+                {userstatus === "idle"
+                  ? Array.from({ length: 5 }).map((_, i) => (
+                      <tr key={i} className="animate-pulse">
+                        <td className="py-3">
+                          <div className="skeleton h-4 w-32"></div> {/* Name */}
+                        </td>
+                        <td className="py-3">
+                          <div className="skeleton h-4 w-40"></div>{" "}
+                          {/* Email ID */}
+                        </td>
+                        <td className="py-3">
+                          <div className="skeleton h-4 w-28"></div>{" "}
+                          {/* Created At */}
+                        </td>
+                        <td className="py-3">
+                          <div className="skeleton h-4 w-20"></div> {/* Role */}
+                        </td>
+                        <td className="py-3 ">
+                          <div className="skeleton h-8 w-8 rounded-full"></div>{" "}
+                          {/* Action 1 */}
+                        </td>
+                      </tr>
+                    ))
+                  : users != null &&
+                    users.map((user, k) => (
+                      <tr key={k}>
+                        <td>
+                          <div className="flex items-center space-x-3">
+                            <div className="avatar">
+                              <div className="mask mask-squircle w-12 h-12">
+                                <img
+                                  src={
+                                    user.profileImage ||
+                                    "https://reqres.in/img/faces/1-image.jpg"
+                                  }
+                                  alt="Avatar"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="font-bold">{user.name}</div>
+                              <div className="text-sm opacity-50">
+                                {user.email}
+                              </div>
                             </div>
                           </div>
-                          <div>
-                            <div className="font-bold">{user.name}</div>
-                            <div className="text-sm opacity-50">
-                              {user.email}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>{user.email}</td>
-                      <td>{moment(user.createdAt).format("DD MMM YY")}</td>
+                        </td>
+                        <td>{user.email}</td>
+                        <td>{moment(user.createdAt).format("DD MMM YY")}</td>
 
-                      <td>
-                        <select
-                          disabled={user._id === currentUser._id}
-                          className="select select-bordered select-sm"
-                          value={user.role}
-                          onChange={(e) =>
-                            this.handleRoleChange(user._id, e.target.value)
-                          }
-                        >
-                          <option value="user">User</option>
-                          <option value="admin">Admin</option>
-                          <option value="support_agent">Support Agent</option>
-                        </select>
-                      </td>
+                        <td>
+                          <select
+                            disabled={user._id === currentUser._id}
+                            className="select select-bordered select-sm"
+                            value={user.role}
+                            onChange={(e) =>
+                              this.handleRoleChange(user._id, e.target.value)
+                            }
+                          >
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                            <option value="support_agent">Support Agent</option>
+                          </select>
+                        </td>
 
-                      <td>
-                        <button
-                          disabled={user._id === currentUser._id}
-                          className="btn btn-square btn-ghost"
-                          onClick={() => this.openConfirmUserDelete(k)}
-                        >
-                          <TrashIcon className="w-5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        <td>
+                          <button
+                            disabled={user._id === currentUser._id}
+                            className="btn btn-square btn-ghost"
+                            onClick={() => this.openConfirmUserDelete(k)}
+                          >
+                            <TrashIcon className="w-5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
+            {users.length === 0 && userstatus !== "idle" && (
+              <div className="p-8 text-center">
+                <AlertCircle className="mx-auto h-12 w-12 text-base-content/40" />
+                <h3 className="mt-4 text-lg font-semibold text-base-content">
+                  No Users found
+                </h3>
+                <p className="mt-2 text-base-content/60">
+                  {users.length === 0
+                    ? "Get started by creating your first user!"
+                    : "No departments match your search criteria."}
+                </p>
+                {users.length === 0 && (
+                  <button
+                    onClick={this.openAddNewUserModal}
+                    className="mt-4 btn btn-primary gap-2"
+                  >
+                    <Plus size={20} /> Create User
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </TitleCard>
       </>
@@ -174,6 +219,7 @@ class UserList extends Component {
 
 const mapStateToProps = (state) => ({
   users: state.user.users,
+  userstatus: state.user.userstatus,
   auth: state.auth,
 });
 

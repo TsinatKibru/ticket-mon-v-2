@@ -11,12 +11,17 @@ const notificationSlice = createSlice({
     addNotification: (state, action) => {
       state.notifications.unshift(action.payload); // Add new notification at the top
     },
+    removeNotification: (state, action) => {
+      state.notifications = state.notifications.filter(
+        (notification) => notification.message !== action.payload.message
+      );
+    },
     clearNotifications: (state) => {
       state.notifications = [];
     },
   },
 });
 
-export const { addNotification, clearNotifications } =
+export const { addNotification, removeNotification, clearNotifications } =
   notificationSlice.actions;
 export default notificationSlice.reducer;

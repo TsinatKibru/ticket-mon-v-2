@@ -1,84 +1,9 @@
-// import express from "express";
-// import cookieParser from "cookie-parser";
-// import cors from "cors";
-// import { PORT } from "./config/env.js";
-// import userRouter from "./routes/user.routes.js";
-// import authRouter from "./routes/auth.routes.js";
-// import ticketRouter from "./routes/ticket.routes.js";
-// import connectToDatabase from "./database/mongodb.js";
-// import errorMiddleware from "./middlewares/error.middleware.js";
-// import apiLimiter from "./middlewares/ratelimiter.middleware.js";
-// import path from "path";
-// import.meta.url;
-// import { fileURLToPath } from "url"; // Import fileURLToPath
-
-// import { createServer } from "http"; // Import HTTP Server
-// import { Server } from "socket.io"; // Import Socket.IO
-// // import { authenticateSocket } from "./middlewares/socketAuth.middleware.js"; // Create this middleware
-
-// const app = express();
-// const server = createServer(app); // Create HTTP Server
-// const io = new Server(server, {
-//   cors: {
-//     origin: "http://localhost:3000", // Adjust for frontend
-//     credentials: true,
-//   },
-// });
-
-// // Enable CORS
-// app.use(
-//   cors({
-//     origin: "http://localhost:3000", // Allow requests from your React frontend
-//     credentials: true, // Allow cookies and credentials
-//   })
-// );
-
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser());
-
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-
-// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// app.use("/api", apiLimiter);
-// app.use("/api/v1/auth", authRouter);
-// app.use("/api/v1/users", userRouter);
-// app.use("/api/v1/tickets", ticketRouter);
-
-// app.use(errorMiddleware);
-
-// app.get("/", (req, res) => {
-//   res.send("welcome to your api");
-// });
-
-// //io.use(authenticateSocket);
-// io.on("connection", (socket) => {
-//   console.log(`User connected: ${socket.user.name}`);
-
-//   socket.on("disconnect", () => {
-//     console.log(`User disconnected: ${socket.user.name}`);
-//   });
-// });
-
-// // app.listen(PORT, async () => {
-// //   console.log("Ticket Monitoring API running on", PORT);
-// //   await connectToDatabase();
-// // });
-// server.listen(PORT, async () => {
-//   // Change app.listen → server.listen
-//   console.log("Ticket Monitoring API running on", PORT);
-//   await connectToDatabase();
-// });
-// export { io };
-
-// export default app;
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { PORT } from "./config/env.js";
 import userRouter from "./routes/user.routes.js";
+import departmentRouter from "./routes/department.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import ticketRouter from "./routes/ticket.routes.js";
 import connectToDatabase from "./database/mongodb.js";
@@ -127,6 +52,7 @@ app.use("/api", apiLimiter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/tickets", ticketRouter);
+app.use("/api/v1/departments", departmentRouter);
 
 app.use(errorMiddleware);
 

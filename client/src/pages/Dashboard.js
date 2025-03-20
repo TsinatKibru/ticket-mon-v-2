@@ -16,6 +16,7 @@ import TicketStatusChart from "../components/TicketStatusChart";
 import RecentTickets from "../components/RecentTickets";
 import { fetchUsers, fetchTicketsAPi } from "../utils/api";
 import { getTickets } from "../redux/slices/ticketSlice";
+import { setPageTitle } from "../redux/slices/headerSlice";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -31,6 +32,9 @@ class Dashboard extends Component {
   componentDidMount() {
     this.applyTheme();
     this.fetchData();
+    this.props.setPageTitle({
+      title: "Home",
+    });
   }
 
   applyTheme = () => {
@@ -228,6 +232,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUsersContent,
   getTickets,
+  setPageTitle,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

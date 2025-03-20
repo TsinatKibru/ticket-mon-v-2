@@ -49,6 +49,12 @@ const ticketSchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
+
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
+      default: null,
+    },
     attachments: {
       type: [String],
       default: [],
@@ -72,6 +78,19 @@ const ticketSchema = new mongoose.Schema(
             type: Date,
             default: Date.now,
           },
+          parentCommentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            default: null, // Null for top-level comments
+          },
+          replies: [
+            {
+              text: String,
+              created_by: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+              },
+            },
+          ],
         },
       ],
       default: [], // Comments are optional and default to an empty array
