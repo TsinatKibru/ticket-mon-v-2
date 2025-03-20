@@ -20,7 +20,7 @@ const server = createServer(app);
 
 const allowedOrigins =
   process.env.NODE_ENV === "production"
-    ? ["https://fabulous-harmony-production.up.railway.app"]
+    ? ["https://ticket-mon-v-2-n161kzvvl-tsinats-projects.vercel.app"]
     : ["http://localhost:3000"];
 
 // Initialize Socket.IO
