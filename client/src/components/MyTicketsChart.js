@@ -10,7 +10,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import TitleCard from "./TitleCard";
-import moment from "moment";
+import { format } from "date-fns";
 
 ChartJS.register(
   CategoryScale,
@@ -30,7 +30,8 @@ function MyTicketsChart({ tickets }) {
 
       // Count tickets created per day
       tickets.forEach((ticket) => {
-        const createdAt = moment(ticket.createdAt).format("YYYY-MM-DD");
+        const createdAt = format(ticket.createdAt, "yyyy-MM-dd");
+        //const createdAt = moment(ticket.createdAt).format("YYYY-MM-DD");
         ticketCounts[createdAt] = (ticketCounts[createdAt] || 0) + 1;
       });
 

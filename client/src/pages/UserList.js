@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import moment from "moment";
+// import moment from "moment";
+import { format } from "date-fns";
+
 import { fetchUsers, deleteUserById, updateUserRole } from "../utils/api"; // Add updateUserRole
 import {
   getUsersContent,
@@ -159,7 +161,7 @@ class UserList extends Component {
                           </div>
                         </td>
                         <td>{user.email}</td>
-                        <td>{moment(user.createdAt).format("DD MMM YY")}</td>
+                        <td>{format(user.createdAt, "yyyy-MM-dd")}</td>
 
                         <td>
                           <select

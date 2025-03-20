@@ -1,5 +1,5 @@
 import TitleCard from "./TitleCard";
-import moment from "moment";
+import { format } from "date-fns";
 
 function RecentTickets({ tickets }) {
   // Sort tickets by createdAt in descending order (most recent first)
@@ -33,7 +33,7 @@ function RecentTickets({ tickets }) {
                 <td>{ticket.status}</td>
                 <td>{ticket.priority}</td>
                 <td>{ticket.created_by?.name}</td>
-                <td>{moment(ticket.createdAt).format("YYYY-MM-DD HH:mm")}</td>
+                <td>{format(ticket.createdAt, "yyyy-MM-dd")}</td>
               </tr>
             ))}
           </tbody>

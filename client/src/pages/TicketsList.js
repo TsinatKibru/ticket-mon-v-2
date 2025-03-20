@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import moment from "moment";
+import { format } from "date-fns";
+
 import TitleCard from "../components/TitleCard";
 import { openModal } from "../redux/slices/modalSlice";
 import { setPageTitle } from "../redux/slices/headerSlice";
@@ -34,6 +35,7 @@ import DatePicker from "react-datepicker"; // For date range filter
 import "react-datepicker/dist/react-datepicker.css"; // Date picker styles
 import { openRightDrawer } from "../redux/slices/rightDrawerSlice";
 import { AlertCircle, Plus } from "lucide-react";
+import { isWithinInterval, parseISO } from "date-fns";
 
 class TicketsList extends Component {
   constructor(props) {
@@ -238,13 +240,32 @@ class TicketsList extends Component {
           const matchesAssignedTo = filters.assignedTo
             ? ticket.assigned_to?._id === filters.assignedTo
             : true;
+          // const matchesDateRange =
+          //   filters.startDate && filters.endDate
+          //     ? moment(ticket.createdAt).isBetween(
+          //         filters.startDate,
+          //         filters.endDate,
+          //         "day",
+          //         "[]"
+          //       )
+          //     : true;
           const matchesDateRange =
             filters.startDate && filters.endDate
-              ? moment(ticket.createdAt).isBetween(
-                  filters.startDate,
-                  filters.endDate,
-                  "day",
-                  "[]"
+              ? isWithinInterval(
+                  // Ensure ticket.createdAt is a Date object
+                  typeof ticket.createdAt === "string"
+                    ? parseISO(ticket.createdAt)
+                    : ticket.createdAt,
+                  {
+                    start:
+                      typeof filters.startDate === "string"
+                        ? parseISO(filters.startDate)
+                        : filters.startDate,
+                    end:
+                      typeof filters.endDate === "string"
+                        ? parseISO(filters.endDate)
+                        : filters.endDate,
+                  }
                 )
               : true;
           const matchesSearchQuery = searchQuery
@@ -558,9 +579,7 @@ class TicketsList extends Component {
                           </td>
                           <td>{ticket.priority}</td>
                           <td>{ticket.created_by?.name}</td>
-                          <td>
-                            {moment(ticket.createdAt).format("DD MMM YY")}
-                          </td>
+                          <td>{format(ticket.createdAt, "yyyy-MM-dd")}</td>
                           <td>{ticket.assigned_to?.name || "None"}</td>
                           <td>
                             <div className="flex space-x-2">
@@ -645,8 +664,9 @@ class TicketsList extends Component {
                                         By:{" "}
                                         {comment.created_by.name || "Unknown"}{" "}
                                         on{" "}
-                                        {moment(comment.createdAt).format(
-                                          "DD MMM YY, h:mm A"
+                                        {format(
+                                          parseISO(comment.createdAt),
+                                          "dd MMM yy, h:mm a"
                                         )}
                                       </p>
                                       <button
