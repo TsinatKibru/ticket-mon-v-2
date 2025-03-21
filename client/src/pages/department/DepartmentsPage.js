@@ -26,7 +26,7 @@ const DepartmentsPage = () => {
 
   // Fetch departments on component mount
   useEffect(() => {
-    dispatch(fetchDepartments());
+    // dispatch(fetchDepartments());
     dispatch(setPageTitle({ title: "Dep. List" }));
   }, [dispatch]);
 

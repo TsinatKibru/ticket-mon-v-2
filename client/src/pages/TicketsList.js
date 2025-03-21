@@ -34,7 +34,7 @@ import AttachmentsPreview from "../utils/AttachmentsPreview";
 import DatePicker from "react-datepicker"; // For date range filter
 import "react-datepicker/dist/react-datepicker.css"; // Date picker styles
 import { openRightDrawer } from "../redux/slices/rightDrawerSlice";
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle, Plus, ReplyIcon } from "lucide-react";
 import { isWithinInterval, parseISO } from "date-fns";
 
 class TicketsList extends Component {
@@ -43,6 +43,7 @@ class TicketsList extends Component {
     this.state = {
       loading: false,
       error: null,
+      expandedReplies: {},
       expandedTickets: {}, // Track which tickets are expanded to show comments
       filters: {
         status: "",
@@ -152,6 +153,17 @@ class TicketsList extends Component {
       expandedTickets: {
         ...prevState.expandedTickets,
         [ticketId]: !prevState.expandedTickets[ticketId], // Toggle expanded state
+      },
+    }));
+  };
+
+  toggleReplies = (commentId, comment) => {
+    console.log("comment", comment);
+
+    this.setState((prevState) => ({
+      expandedReplies: {
+        ...prevState.expandedReplies,
+        [commentId]: !prevState.expandedReplies[commentId], // Toggle expanded state
       },
     }));
   };
@@ -301,6 +313,7 @@ class TicketsList extends Component {
       loading,
       error,
       expandedTickets,
+      expandedReplies,
       filters,
       searchQuery,
       sortConfig,
@@ -335,6 +348,7 @@ class TicketsList extends Component {
     return (
       <>
         <TitleCard
+          padding={"p-3 md:p-6"}
           title="Tickets"
           topMargin="mt-2"
           TopSideButtons={
@@ -350,7 +364,7 @@ class TicketsList extends Component {
         >
           <div className="mb-4">
             {/* Filters Dropdown Toggle */}
-            <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex flex-col sm:flex-row  gap-4 ">
               <div className="flex items-center gap-4">
                 <button
                   className="btn btn-sm btn-ghost flex items-center gap-2"
@@ -632,7 +646,7 @@ class TicketsList extends Component {
                         {expandedTickets[ticket._id] && (
                           <tr>
                             <td colSpan="7">
-                              <div className="p-4 bg-gray-50 dark:bg-transparent">
+                              <div className="p-2 md:p-4 bg-gray-50 dark:bg-transparent">
                                 <h3 className="font-semibold mb-2">
                                   Description
                                 </h3>
@@ -654,31 +668,126 @@ class TicketsList extends Component {
                                   Comments
                                 </h3>
                                 {ticket.comments.length > 0 ? (
-                                  ticket.comments.map((comment) => (
-                                    <div
-                                      key={comment._id}
-                                      className="mb-4 p-3 bg-white dark:bg-transparent rounded-lg shadow-sm"
-                                    >
-                                      <p className="text-sm">{comment.text}</p>
-                                      <p className="text-xs text-gray-500 mt-1">
-                                        By:{" "}
-                                        {comment.created_by.name || "Unknown"}{" "}
-                                        on{" "}
-                                        {format(
-                                          parseISO(comment.createdAt),
-                                          "dd MMM yy, h:mm a"
-                                        )}
-                                      </p>
-                                      <button
-                                        onClick={() =>
-                                          this.openChat(comment, ticket._id)
-                                        }
-                                        className=" mt-2 text-blue-600 hover:underline text-sm"
+                                  <div className="space-y-4">
+                                    {ticket.comments.map((comment) => (
+                                      <div
+                                        key={comment._id}
+                                        className="p-4 md:p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 max-w-60 md:max-w-full"
                                       >
-                                        Reply
-                                      </button>
-                                    </div>
-                                  ))
+                                        {/* Comment Text */}
+                                        <p className="text-sm text-gray-800 dark:text-gray-200">
+                                          {comment.text}
+                                        </p>
+
+                                        {/* Comment Metadata */}
+                                        <div className="flex items-center justify-between mt-2">
+                                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            By:{" "}
+                                            {comment.created_by.name ||
+                                              "Unknown"}{" "}
+                                            on{" "}
+                                            {format(
+                                              parseISO(comment.createdAt),
+                                              "dd MMM yy, h:mm a"
+                                            )}
+                                          </p>
+
+                                          {/* Reply Button */}
+                                          <button
+                                            onClick={() =>
+                                              this.openChat(comment, ticket._id)
+                                            }
+                                            className="flex items-center text-blue-600 hover:text-blue-700 text-sm"
+                                          >
+                                            <ReplyIcon className="h-4 w-4 mr-1" />{" "}
+                                            {/* Icon for reply */}
+                                            <span>Reply</span>
+                                          </button>
+                                        </div>
+
+                                        {/* Expand/Collapse Replies Button */}
+                                        {comment.replies &&
+                                          comment.replies.length > 0 && (
+                                            <button
+                                              onClick={() =>
+                                                this.toggleReplies(
+                                                  comment._id,
+                                                  comment
+                                                )
+                                              }
+                                              className="flex items-center text-blue-600 hover:text-blue-700 text-sm mt-2"
+                                            >
+                                              {expandedReplies[comment._id] ? (
+                                                <>
+                                                  <ChevronUpIcon className="h-4 w-4 mr-1" />{" "}
+                                                  {/* Collapse icon */}
+                                                  <span>Hide Replies</span>
+                                                </>
+                                              ) : (
+                                                <>
+                                                  <ChevronDownIcon className="h-4 w-4 mr-1" />{" "}
+                                                  {/* Expand icon */}
+                                                  <span>
+                                                    View{" "}
+                                                    {comment.replies.length}{" "}
+                                                    Replies
+                                                  </span>
+                                                </>
+                                              )}
+                                            </button>
+                                          )}
+
+                                        {/* Nested Replies (Conditional) */}
+                                        {expandedReplies[comment._id] &&
+                                          comment.replies && (
+                                            <div className="ml-6 mt-4 space-y-4 transition-all duration-300">
+                                              {comment.replies.map((reply) => (
+                                                <div
+                                                  key={reply._id}
+                                                  className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg shadow-sm border border-gray-100 dark:border-gray-600"
+                                                >
+                                                  <p className="text-sm text-gray-800 dark:text-gray-200">
+                                                    {reply.text}
+                                                  </p>
+                                                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                    By:{" "}
+                                                    {reply.created_by.name ||
+                                                      "Unknown"}{" "}
+                                                    on{" "}
+                                                    {format(
+                                                      parseISO(reply.createdAt),
+                                                      "dd MMM yy, h:mm a"
+                                                    )}
+                                                  </p>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
+
+                                        {/* Reply Input Field (Conditional) */}
+                                        {this.state.openReplyId ===
+                                          comment._id && (
+                                          <div className="mt-4">
+                                            <textarea
+                                              placeholder="Write a reply..."
+                                              className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-gray-200"
+                                              rows="3"
+                                            />
+                                            <button
+                                              onClick={() =>
+                                                this.handleReplySubmit(
+                                                  comment._id
+                                                )
+                                              }
+                                              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                            >
+                                              Submit Reply
+                                            </button>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
                                 ) : (
                                   <p className="text-gray-500">
                                     No comments yet.

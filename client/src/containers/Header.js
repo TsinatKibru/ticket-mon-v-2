@@ -12,6 +12,7 @@ import axios from "axios"; // Import axios for making HTTP requests
 import { updateUser } from "../redux/slices/userSlice";
 import socket from "../utils/socket";
 import { setUser } from "../redux/slices/authSlice";
+import { LogOutIcon, SparklesIcon, UploadIcon } from "lucide-react";
 
 class Header extends Component {
   constructor(props) {
@@ -135,7 +136,7 @@ class Header extends Component {
             </button>
 
             {/* Profile icon, opening menu on click */}
-            <div className="dropdown dropdown-end ml-4">
+            {/* <div className="dropdown dropdown-end ml-4">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
                   <img src={user?.profileImage || profileImage} alt="profile" />
@@ -152,7 +153,7 @@ class Header extends Component {
                   </Link>
                 </li>
 
-                {/* Add a file input for uploading profile image */}
+                
                 <li>
                   <label
                     htmlFor="profileImageUpload"
@@ -172,6 +173,59 @@ class Header extends Component {
                 <div className="divider mt-0 mb-0"></div>
                 <li>
                   <a onClick={this.logoutUser}>Logout</a>
+                </li>
+              </ul>
+            </div> */}
+            <div className="dropdown dropdown-end ml-4">
+              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                <div className="w-10 rounded-full">
+                  <img src={user?.profileImage || profileImage} alt="profile" />
+                </div>
+              </label>
+              <ul
+                tabIndex={0}
+                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li className="justify-between">
+                  <Link to={"/app/"}>
+                    {user?.name}
+                    <span className="badge">
+                      <SparklesIcon className="h-4 w-4" />{" "}
+                      {/* Replace "New" with an icon */}
+                    </span>
+                  </Link>
+                </li>
+
+                {/* Add a file input for uploading profile image */}
+                <li>
+                  <label
+                    htmlFor="profileImageUpload"
+                    className="cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2">
+                      <UploadIcon className="h-4 w-4" />{" "}
+                      {/* Add an icon for upload */}
+                      <span>Upload Profile Image</span>
+                    </div>
+                  </label>
+                  <input
+                    id="profileImageUpload"
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={this.handleProfileImageUpload}
+                  />
+                </li>
+
+                <div className="divider mt-0 mb-0"></div>
+                <li>
+                  <a onClick={this.logoutUser}>
+                    <div className="flex items-center gap-2">
+                      <LogOutIcon className="h-4 w-4" />{" "}
+                      {/* Add an icon for logout */}
+                      <span>Logout</span>
+                    </div>
+                  </a>
                 </li>
               </ul>
             </div>

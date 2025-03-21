@@ -1,10 +1,11 @@
 import Subtitle from "./Subtitle";
 
-function TitleCard({ title, children, topMargin, TopSideButtons }) {
+function TitleCard({ title, children, topMargin, TopSideButtons, padding }) {
   return (
     <div
       className={
-        `card w-full  p-2 sm:p-6 bg-base-100 shadow-xl ` + (topMargin || "mt-6")
+        `card w-full  ${padding || "p-6"} bg-base-100 shadow-xl ` +
+        (topMargin || "mt-6")
       }
     >
       {/* Title for Card */}

@@ -35,6 +35,8 @@ export function DepartmentList({
       dispatch(setStatus("idle"));
     }
 
+    console.log("status", status);
+
     // return () => {
     //   dispatch(setStatus("idle"));
     // };
@@ -103,7 +105,7 @@ export function DepartmentList({
               </tr>
             </thead>
             <tbody>
-              {status === "loading"
+              {status === "idle" || status === "loading"
                 ? Array.from({ length: 5 }).map((_, i) => (
                     <tr key={i} className="animate-pulse">
                       <td className="py-3">
@@ -172,7 +174,7 @@ export function DepartmentList({
         </div>
 
         {/* Empty State */}
-        {filteredDepartments.length === 0 && status !== "loading" && (
+        {filteredDepartments.length === 0 && status === "succeeded" && (
           <div className="p-8 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-base-content/40" />
             <h3 className="mt-4 text-lg font-semibold text-base-content">

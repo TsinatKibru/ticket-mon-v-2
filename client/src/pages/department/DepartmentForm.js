@@ -9,6 +9,7 @@ export function DepartmentForm({ department, users, onSave, onCancel }) {
     assignmentAlgorithm: "roundRobin",
     users: [],
   });
+  const supportAgents = users.filter((user) => user.role === "support_agent");
 
   useEffect(() => {
     if (department) {
@@ -89,7 +90,7 @@ export function DepartmentForm({ department, users, onSave, onCancel }) {
         </div>
 
         <MultiSelectDropdown
-          users={users}
+          users={supportAgents}
           formData={formData}
           setFormData={setFormData}
         />

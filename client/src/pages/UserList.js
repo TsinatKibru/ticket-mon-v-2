@@ -166,7 +166,7 @@ class UserList extends Component {
                         <td>
                           <select
                             disabled={user._id === currentUser._id}
-                            className="select select-bordered select-sm"
+                            className="select select-bordered select-sm min-w-32"
                             value={user.role}
                             onChange={(e) =>
                               this.handleRoleChange(user._id, e.target.value)

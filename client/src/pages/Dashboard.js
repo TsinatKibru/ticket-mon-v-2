@@ -116,7 +116,7 @@ class Dashboard extends Component {
 
     if (loading) {
       return (
-        <div className="px-0 py-6  md:px-6 ">
+        <div className="px-2 py-6  md:px-6 ">
           <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
           {/* Skeleton for Analytics Section */}
@@ -157,7 +157,7 @@ class Dashboard extends Component {
     const ticketStatusDistribution = this.getTicketStatusDistribution();
 
     return (
-      <div className="px-0 py-6  md:px-6  ">
+      <div className="px-2 py-6  md:px-6  ">
         <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
         {/* Analytics Section */}
@@ -201,7 +201,7 @@ class Dashboard extends Component {
 
         {/* Ticket Status Distribution Section */}
         <div className="px-0 py-6  md:px-6  rounded-lg shadow-md mb-8">
-          <h2 className="text-lg font-semibold mb-4">
+          <h2 className="px-6 md:px-0 text-lg font-semibold mb-4">
             Ticket Status Distribution
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

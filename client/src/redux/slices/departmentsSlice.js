@@ -71,8 +71,8 @@ const departmentsSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchDepartments.fulfilled, (state, action) => {
-        state.status = "succeeded";
         state.departments = action.payload;
+        state.status = "succeeded";
       })
       .addCase(fetchDepartments.rejected, (state, action) => {
         state.status = "failed";

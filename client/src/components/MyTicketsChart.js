@@ -70,9 +70,8 @@ function MyTicketsChart({ tickets }) {
       },
     },
   };
-
   return (
-    <TitleCard title=" Tickets">
+    <TitleCard title=" Tickets" padding={"px-2 py-2 md:px-6 md:py-6"}>
       {chartData ? (
         <Bar data={chartData} options={options} />
       ) : (
