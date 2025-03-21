@@ -80,7 +80,7 @@ const ChatDrawerBody = ({ extraObject }) => {
   };
 
   return (
-    <div className="h-[calc(90vh)] overflow-auto flex flex-col">
+    <div className="h-[90vh] overflow-auto flex flex-col">
       {/* Comment and Replies */}
       <div className="flex-1 overflow-y-auto p-4">
         {/* Display the main comment */}

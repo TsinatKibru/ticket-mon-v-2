@@ -672,7 +672,7 @@ class TicketsList extends Component {
                                     {ticket.comments.map((comment) => (
                                       <div
                                         key={comment._id}
-                                        className="p-4 md:p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 max-w-60 md:max-w-full"
+                                        className="p-4 md:p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 max-w-72 md:max-w-full"
                                       >
                                         {/* Comment Text */}
                                         <p className="text-sm text-gray-800 dark:text-gray-200">
