@@ -2,6 +2,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 import User from "../models/user.model.js";
+import { NODE_ENV } from "../config/env.js";
 
 // Derive __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -98,7 +99,8 @@ export const uploadProfileImage = async (req, res, next) => {
     }
 
     const filePath = req.file.path;
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const protocol = NODE_ENV === "production" ? "https" : "https";
+    const baseUrl = `${protocol}://${req.get("host")}`;
     const fileUrl = `${baseUrl}/uploads/${path.relative(
       path.join(__dirname, "../uploads"),
       filePath
