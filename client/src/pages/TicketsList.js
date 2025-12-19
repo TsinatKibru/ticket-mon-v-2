@@ -244,83 +244,95 @@ function TicketsList() {
   if (error) return <div className="p-4 text-center text-error">{error}</div>;
 
   return (
-    <>
-      <TitleCard
-        title="Tickets Management"
-        topMargin="mt-2"
-        TopSideButtons={
-          <button className="btn btn-primary btn-sm px-6" onClick={openAddNewTicketModal}>
-            <UploadIcon className="w-4 h-4 mr-2" /> New Ticket
-          </button>
-        }
-      >
+    <div className="space-y-6 animate-in fade-in duration-700">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-4 md:px-0">
+        <div>
+          <h1 className="text-3xl font-bold font-outfit tracking-tight text-white flex items-center gap-3">
+            <span className="w-2 h-8 bg-primary rounded-full hidden md:block" />
+            Tickets Management
+          </h1>
+          <p className="text-white/40 text-sm font-medium mt-1">Review and manage support requests</p>
+        </div>
+        <button
+          className="btn btn-primary h-12 px-6 rounded-2xl shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 font-bold"
+          onClick={openAddNewTicketModal}
+        >
+          <UploadIcon className="w-4 h-4 mr-2" /> New Ticket
+        </button>
+      </div>
+
+      <div className="minimal-card rounded-3xl overflow-hidden border border-white/5">
         {/* Toolbar */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6 justify-between items-center">
-          <div className="flex gap-2">
-            <button className={`btn btn-sm ${showFilters ? 'btn-neutral' : 'btn-ghost'}`} onClick={toggleFilters}>
-              <AdjustmentsHorizontalIcon className="w-4 h-4" /> Filters
+        <div className="p-4 md:p-6 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 bg-white/[0.01]">
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <button
+              className={`btn btn-sm h-10 px-4 rounded-xl border-white/10 hover:bg-white/5 transition-all ${showFilters ? 'bg-white/10 text-white' : 'bg-transparent text-white/60'}`}
+              onClick={toggleFilters}
+            >
+              <AdjustmentsHorizontalIcon className="w-4 h-4 mr-2" /> Filters
             </button>
             {(filters.status || filters.priority || filters.assignedTo || searchQuery) && (
-              <button className="btn btn-sm btn-ghost text-error" onClick={clearFilters}>
-                <XMarkIcon className="w-4 h-4" /> Clear
+              <button className="btn btn-sm h-10 px-4 rounded-xl btn-ghost text-error/80 hover:bg-error/10" onClick={clearFilters}>
+                <XMarkIcon className="w-4 h-4 mr-2" /> Clear
               </button>
             )}
           </div>
-          <div className="relative w-full sm:w-72">
+
+          <div className="relative w-full md:w-80">
             <input
               type="text"
-              placeholder="Search tickets..."
-              className="input input-bordered input-sm w-full pl-10"
+              placeholder="Search by title or description..."
+              className="w-full h-11 bg-white/[0.03] border border-white/10 rounded-xl pl-11 pr-4 text-sm focus:border-white/20 focus:bg-white/[0.05] transition-all outline-none text-white font-medium placeholder:text-white/20"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <MagnifyingGlassIcon className="w-4 h-4 absolute left-3 top-2.5 text-base-content/50" />
+            <MagnifyingGlassIcon className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
           </div>
         </div>
 
         {/* Filters Drawer */}
         {showFilters && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 glass-effect rounded-2xl mb-6 shadow-xl animate-fade-in-down">
-            <div className="form-control">
-              <label className="label"><span className="label-text">Status</span></label>
-              <select className="select select-bordered select-sm" value={filters.status} onChange={(e) => handleFilterChange('status', e.target.value)}>
-                <option value="">All</option>
+          <div className="p-6 bg-white/[0.02] border-b border-white/5 grid grid-cols-1 md:grid-cols-4 gap-6 animate-in slide-in-from-top duration-300">
+            <div className="form-control w-full">
+              <label className="label py-1"><span className="label-text text-[10px] font-bold uppercase tracking-widest text-white/30">Status</span></label>
+              <select className="select select-bordered select-sm bg-white/[0.02] border-white/10 h-10 rounded-xl" value={filters.status} onChange={(e) => handleFilterChange('status', e.target.value)}>
+                <option value="">All Statuses</option>
                 <option value="Open">Open</option>
                 <option value="In Progress">In Progress</option>
                 <option value="Resolved">Resolved</option>
               </select>
             </div>
-            <div className="form-control">
-              <label className="label"><span className="label-text">Priority</span></label>
-              <select className="select select-bordered select-sm" value={filters.priority} onChange={(e) => handleFilterChange('priority', e.target.value)}>
-                <option value="">All</option>
+            <div className="form-control w-full">
+              <label className="label py-1"><span className="label-text text-[10px] font-bold uppercase tracking-widest text-white/30">Priority</span></label>
+              <select className="select select-bordered select-sm bg-white/[0.02] border-white/10 h-10 rounded-xl" value={filters.priority} onChange={(e) => handleFilterChange('priority', e.target.value)}>
+                <option value="">All Priorities</option>
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
               </select>
             </div>
-            <div className="form-control">
-              <label className="label"><span className="label-text">Assigned To</span></label>
-              <select className="select select-bordered select-sm" value={filters.assignedTo} onChange={(e) => handleFilterChange('assignedTo', e.target.value)}>
-                <option value="">All</option>
+            <div className="form-control w-full">
+              <label className="label py-1"><span className="label-text text-[10px] font-bold uppercase tracking-widest text-white/30">Assignee</span></label>
+              <select className="select select-bordered select-sm bg-white/[0.02] border-white/10 h-10 rounded-xl" value={filters.assignedTo} onChange={(e) => handleFilterChange('assignedTo', e.target.value)}>
+                <option value="">Anyone</option>
                 {users?.map(u => <option key={u._id} value={u._id}>{u.name}</option>)}
               </select>
             </div>
-            <div className="form-control">
-              <label className="label"><span className="label-text">Date Range</span></label>
+            <div className="form-control w-full">
+              <label className="label py-1"><span className="label-text text-[10px] font-bold uppercase tracking-widest text-white/30">Date Range</span></label>
               <div className="flex gap-2">
                 <DatePicker
                   selected={filters.startDate}
                   onChange={(date) => handleFilterChange('startDate', date)}
                   selectsStart startDate={filters.startDate} endDate={filters.endDate}
-                  className="input input-bordered input-sm w-full"
+                  className="w-full h-10 bg-white/[0.02] border border-white/10 rounded-xl px-3 text-xs text-white"
                   placeholderText="Start"
                 />
                 <DatePicker
                   selected={filters.endDate}
                   onChange={(date) => handleFilterChange('endDate', date)}
                   selectsEnd startDate={filters.startDate} endDate={filters.endDate}
-                  className="input input-bordered input-sm w-full"
+                  className="w-full h-10 bg-white/[0.02] border border-white/10 rounded-xl px-3 text-xs text-white"
                   placeholderText="End"
                 />
               </div>
@@ -328,74 +340,82 @@ function TicketsList() {
           </div>
         )}
 
-        {/* Table */}
         <div className="overflow-x-auto w-full">
-          <table className="table w-full custom-table">
+          <table className="table w-full border-separate border-spacing-0">
             <thead>
-              <tr className="text-neutral-content/40 uppercase text-[10px] font-bold tracking-[0.15em] border-b border-white/5 bg-white/[0.01]">
-                <th className="py-4 px-6 font-outfit cursor-pointer hover:text-primary transition-colors" onClick={() => handleSort('title')}>
-                  Ticket Title {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? <ChevronUpIcon className="inline w-3 h-3 ml-1" /> : <ChevronDownIcon className="inline w-3 h-3 ml-1" />)}
+              <tr className="bg-white/[0.01] border-b border-white/5">
+                <th className="py-4 px-6 text-[11px] font-bold uppercase tracking-[0.1em] text-white/30 border-b border-white/5 cursor-pointer hover:text-white transition-colors" onClick={() => handleSort('title')}>
+                  Ticket Information {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? <ChevronUpIcon className="inline w-3 h-3 ml-1" /> : <ChevronDownIcon className="inline w-3 h-3 ml-1" />)}
                 </th>
-                <th className="font-outfit">Status</th>
-                <th className="font-outfit">Priority</th>
-                <th className="font-outfit">Reporter</th>
-                <th className="font-outfit cursor-pointer hover:text-primary transition-colors" onClick={() => handleSort('createdAt')}>
-                  Generated {sortConfig.key === 'createdAt' && (sortConfig.direction === 'asc' ? <ChevronUpIcon className="inline w-3 h-3 ml-1" /> : <ChevronDownIcon className="inline w-3 h-3 ml-1" />)}
+                <th className="py-4 px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-white/30 border-b border-white/5">Status</th>
+                <th className="py-4 px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-white/30 border-b border-white/5">Priority</th>
+                <th className="py-4 px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-white/30 border-b border-white/5">Reporter</th>
+                <th className="py-4 px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-white/30 border-b border-white/5 cursor-pointer hover:text-white transition-colors" onClick={() => handleSort('createdAt')}>
+                  Creation Date {sortConfig.key === 'createdAt' && (sortConfig.direction === 'asc' ? <ChevronUpIcon className="inline w-3 h-3 ml-1" /> : <ChevronDownIcon className="inline w-3 h-3 ml-1" />)}
                 </th>
-                <th className="font-outfit">Owner</th>
-                <th className="text-right px-6 font-outfit">Actions</th>
+                <th className="py-4 px-4 text-[11px] font-bold uppercase tracking-[0.1em] text-white/30 border-b border-white/5">Assignee</th>
+                <th className="py-4 px-6 text-right text-[11px] font-bold uppercase tracking-[0.1em] text-white/30 border-b border-white/5">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {paginatedTickets.map(ticket => (
                 <React.Fragment key={ticket._id}>
-                  <tr className="hover:bg-white/[0.02] transition-all duration-200 group border-none">
-                    <td className="py-3 px-6 font-bold text-sm text-white/90 group-hover:text-white transition-colors">
-                      {ticket.title}
+                  <tr className={`group transition-all duration-300 hover:bg-white/[0.03] ${expandedTickets[ticket._id] ? 'bg-white/[0.02]' : ''}`}>
+                    <td className="py-5 px-6">
+                      <div className="font-bold text-sm text-white/90 group-hover:text-white transition-colors">{ticket.title}</div>
+                      <div className="text-[11px] text-white/30 mt-1 line-clamp-1 max-w-xs">{ticket.description}</div>
                     </td>
-                    <td>
-                      <div className={`badge badge-sm rounded-md px-2.5 py-2 font-bold text-[10px] tracking-wider uppercase border transition-all ${ticket.status === 'Open' ? 'bg-rose-500/10 border-rose-500/20 text-rose-500' :
-                        ticket.status === 'In Progress' ? 'bg-amber-500/10 border-amber-500/20 text-amber-500' :
-                          'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
+                    <td className="py-5 px-4">
+                      <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${ticket.status === 'Open' ? 'bg-rose-500/5 border-rose-500/20 text-rose-400' :
+                        ticket.status === 'In Progress' ? 'bg-amber-500/5 border-amber-500/20 text-amber-400' :
+                          'bg-emerald-500/5 border-emerald-500/20 text-emerald-400'
                         }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full mr-2 ${ticket.status === 'Open' ? 'bg-rose-500' :
+                          ticket.status === 'In Progress' ? 'bg-amber-500' :
+                            'bg-emerald-500'
+                          }`} />
                         {ticket.status}
                       </div>
                     </td>
-                    <td>
-                      <div className={`badge badge-sm rounded-md px-2.5 py-2 font-bold text-[10px] tracking-wider uppercase border ${ticket.priority === 'High' ? 'bg-rose-500/20 border-rose-500/40 text-rose-500' :
-                        ticket.priority === 'Medium' ? 'bg-amber-500/20 border-amber-500/40 text-amber-500' :
-                          'bg-sky-500/20 border-sky-500/40 text-sky-400'
+                    <td className="py-5 px-4">
+                      <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${ticket.priority === 'High' ? 'bg-rose-500/10 border-rose-500/30 text-rose-500' :
+                        ticket.priority === 'Medium' ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' :
+                          'bg-sky-500/10 border-sky-500/30 text-sky-400'
                         }`}>
                         {ticket.priority}
                       </div>
                     </td>
-                    <td>
-                      <div className="flex items-center gap-2.5">
-                        <div className="avatar placeholder relative">
-                          <div className="bg-primary/10 text-primary rounded-lg w-8 h-8 ring-1 ring-primary/20">
-                            <span className="text-xs font-bold leading-none">{ticket.created_by?.name?.charAt(0)}</span>
-                          </div>
+                    <td className="py-5 px-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/5 text-[10px] font-bold text-white/60">
+                          {ticket.created_by?.name?.charAt(0)}
                         </div>
-                        <span className="text-xs text-base-content/70 font-medium">{ticket.created_by?.name}</span>
+                        <span className="text-xs text-white/60 font-medium">{ticket.created_by?.name}</span>
                       </div>
                     </td>
-                    <td className="text-[11px] text-base-content/40 font-semibold tracking-tight">
-                      {format(parseISO(ticket.createdAt), "dd MMM, yy")}
+                    <td className="py-5 px-4">
+                      <div className="text-xs text-white/40 font-medium">
+                        {format(parseISO(ticket.createdAt), "MMM d, yyyy")}
+                      </div>
                     </td>
-                    <td className="text-[11px] font-medium">
+                    <td className="py-5 px-4">
                       {ticket.assigned_to ? (
                         <div className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
-                          <span className="text-base-content/70">{ticket.assigned_to.name}</span>
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+                          <span className="text-xs text-white/70 font-medium">{ticket.assigned_to.name}</span>
                         </div>
                       ) : (
-                        <span className="mx-auto block w-fit px-2 py-0.5 rounded bg-white/5 text-base-content/30 italic">Unassigned</span>
+                        <span className="text-xs text-white/20 italic font-medium">Unassigned</span>
                       )}
                     </td>
-                    <td className="text-right px-6">
-                      <div className="flex justify-end items-center gap-1.5">
-                        <button className="p-1.5 text-base-content/30 hover:text-primary hover:bg-primary/10 rounded-lg transition-all tooltip" data-tip="Discussion" onClick={() => toggleComments(ticket._id)}>
-                          <ChatBubbleLeftIcon className="w-4 h-4" />
+                    <td className="py-5 px-6 text-right">
+                      <div className="flex justify-end items-center gap-2">
+                        <button
+                          className={`p-2 rounded-xl transition-all duration-300 ${expandedTickets[ticket._id] ? 'bg-primary/20 text-primary shadow-lg shadow-primary/10' : 'text-white/40 hover:text-white hover:bg-white/10'}`}
+                          onClick={() => toggleComments(ticket._id)}
+                          title="View Discussion"
+                        >
+                          <ChatBubbleLeftIcon className="w-5 h-5" />
                         </button>
                         <TicketActions
                           ticket={ticket}
@@ -406,101 +426,129 @@ function TicketsList() {
                           openConfirmTicketDelete={openConfirmTicketDelete}
                           openAutoAssignTicketModal={openAutoAssignTicketModal}
                         />
-                        <button className="p-1.5 text-base-content/30 hover:text-white hover:bg-white/5 rounded-lg transition-all" onClick={() => toggleComments(ticket._id)}>
-                          {expandedTickets[ticket._id] ? <ChevronUpIcon className="w-4 h-4" /> : <ChevronDownIcon className="w-4 h-4" />}
-                        </button>
                       </div>
                     </td>
                   </tr>
 
-                  {/* Expanded Details */}
+                  {/* Expanded Content: Native Detail View */}
                   {expandedTickets[ticket._id] && (
-                    <tr className="bg-base-200/30">
-                      <td colSpan="7" className="p-0">
-                        <div className="p-6">
-                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {/* Description & Attachments */}
-                            <div>
-                              <h4 className="font-bold mb-2 text-sm text-base-content/70 uppercase">Description</h4>
-                              <p className="text-sm mb-4 bg-base-100 p-3 rounded-lg border border-base-200">
-                                {ticket.description}
-                              </p>
+                    <tr className="bg-white/[0.01]">
+                      <td colSpan="7" className="p-0 border-b border-white/5 overflow-hidden">
+                        <div className="p-8 animate-in slide-in-from-top-2 duration-500">
+                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-                              <h4 className="font-bold mb-2 text-sm text-base-content/70 uppercase">Attachments</h4>
-                              <AttachmentsPreview
-                                attachments={ticket.attachments}
-                                ticketId={ticket._id}
-                                status={ticket.status}
-                              />
-                            </div>
-
-                            {/* Comments */}
-                            <div>
-                              <div className="flex justify-between items-center mb-3">
-                                <h4 className="font-bold text-sm text-base-content/70 uppercase">Discussion</h4>
+                            {/* Detailed Info */}
+                            <div className="lg:col-span-7 space-y-8">
+                              <div>
+                                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-3">Ticket Information</h4>
+                                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6">
+                                  <h3 className="text-lg font-bold text-white mb-2">{ticket.title}</h3>
+                                  <p className="text-sm text-white/60 leading-relaxed font-medium">
+                                    {ticket.description}
+                                  </p>
+                                </div>
                               </div>
 
-                              <div className="space-y-3 max-h-96 overflow-y-auto pr-2">
+                              <div>
+                                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-3">Supporting Material</h4>
+                                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-2">
+                                  <AttachmentsPreview
+                                    attachments={ticket.attachments}
+                                    ticketId={ticket._id}
+                                    status={ticket.status}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Discussion Sidebar */}
+                            <div className="lg:col-span-5 border-l border-white/5 pl-0 lg:pl-10">
+                              <div className="flex items-center justify-between mb-6">
+                                <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">Communication Activity</h4>
+                                <span className="text-[10px] font-bold text-primary px-2 py-0.5 bg-primary/10 rounded-full">{ticket.comments?.length || 0} Comments</span>
+                              </div>
+
+                              <div className="space-y-6 max-h-[400px] overflow-y-auto pr-4 custom-scrollbar mb-8">
                                 {ticket.comments?.length > 0 ? ticket.comments.map(comment => (
-                                  <div key={comment._id} className="chat chat-start">
-                                    <div className="chat-header text-xs opacity-50 mb-1">
-                                      {comment.created_by?.name} • {format(parseISO(comment.createdAt), "MMM d, HH:mm")}
-                                    </div>
-                                    <div className="chat-bubble chat-bubble-secondary chat-bubble-sm">
-                                      {comment.text}
-                                    </div>
-                                    <div className="chat-footer opacity-50 text-xs flex gap-2 mt-1">
-                                      <button className="hover:text-primary flex items-center gap-1" onClick={() => handleReplyClick(ticket._id, comment)}>
-                                        <ReplyIcon className="w-3 h-3" /> Reply
-                                      </button>
-                                      {comment.replies?.length > 0 && (
-                                        <button className="hover:text-primary" onClick={() => toggleReplies(comment._id)}>
-                                          {expandedReplies[comment._id] ? "Hide Replies" : `${comment.replies.length} Replies`}
-                                        </button>
-                                      )}
+                                  <div key={comment._id} className="space-y-3">
+                                    <div className="flex gap-4">
+                                      <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-bold text-white/40 shrink-0">
+                                        {comment.created_by?.name?.charAt(0)}
+                                      </div>
+                                      <div className="flex-1">
+                                        <div className="flex items-baseline justify-between mb-1">
+                                          <span className="text-xs font-bold text-white/80">{comment.created_by?.name}</span>
+                                          <span className="text-[10px] font-medium text-white/20">{format(parseISO(comment.createdAt), "MMM d, HH:mm")}</span>
+                                        </div>
+                                        <div className="text-sm text-white/60 leading-snug font-medium">
+                                          {comment.text}
+                                        </div>
+                                        <div className="flex items-center gap-3 mt-2">
+                                          <button className="text-[10px] font-bold text-white/20 hover:text-primary transition-colors uppercase tracking-widest" onClick={() => handleReplyClick(ticket._id, comment)}>Reply</button>
+                                          {comment.replies?.length > 0 && (
+                                            <button className="text-[10px] font-bold text-primary/60 hover:text-primary transition-colors uppercase tracking-widest" onClick={() => toggleReplies(comment._id)}>
+                                              {expandedReplies[comment._id] ? "Hide Thread" : `View Thread (${comment.replies.length})`}
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
                                     </div>
 
-                                    {/* Replies */}
+                                    {/* Threaded Replies */}
                                     {expandedReplies[comment._id] && comment.replies?.length > 0 && (
-                                      <div className="ml-4 mt-2 space-y-2 border-l-2 border-base-300 pl-3">
+                                      <div className="ml-12 pl-4 border-l border-white/10 space-y-4 pt-1">
                                         {(comment.replies || []).map(reply => (
-                                          <div key={reply._id} className="text-sm bg-base-100 p-2 rounded">
-                                            <div className="font-bold text-xs">{reply.created_by?.name}</div>
-                                            <div className="text-xs opacity-70 mb-1">{format(parseISO(reply.createdAt), "MMM d, HH:mm")}</div>
-                                            <div>{reply.text}</div>
+                                          <div key={reply._id} className="flex gap-3">
+                                            <div className="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center text-[8px] font-bold text-white/30 shrink-0">
+                                              {reply.created_by?.name?.charAt(0)}
+                                            </div>
+                                            <div className="flex-1">
+                                              <div className="flex items-baseline justify-between mb-0.5">
+                                                <span className="text-[11px] font-bold text-white/60">{reply.created_by?.name}</span>
+                                                <span className="text-[9px] font-medium text-white/20">{format(parseISO(reply.createdAt), "HH:mm")}</span>
+                                              </div>
+                                              <p className="text-xs text-white/40 leading-relaxed font-medium">{reply.text}</p>
+                                            </div>
                                           </div>
                                         ))}
                                       </div>
                                     )}
                                   </div>
                                 )) : (
-                                  <div className="text-center py-4 text-base-content/30 italic">No comments yet</div>
-                                )}
-
-                              </div>
-
-                              {/* Inline Comment Input */}
-                              <div className="mt-4 p-4 bg-base-100 rounded-lg border border-base-200">
-                                {replyState[ticket._id]?.parentCommentId && (
-                                  <div className="flex justify-between items-center mb-2 text-xs bg-base-200 p-2 rounded">
-                                    <span>Replying to <b>{replyState[ticket._id].replyingToName}</b></span>
-                                    <button onClick={() => handleCancelReply(ticket._id)} className="btn btn-ghost btn-xs text-error">Cancel</button>
+                                  <div className="py-12 text-center">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center mx-auto mb-4">
+                                      <ChatBubbleLeftIcon className="w-6 h-6 text-white/10" />
+                                    </div>
+                                    <p className="text-xs text-white/20 font-medium italic">No comments have been recorded for this ticket.</p>
                                   </div>
                                 )}
-                                <div className="flex gap-2 items-start">
+                              </div>
+
+                              {/* Action Bar */}
+                              <div className="relative group">
+                                {replyState[ticket._id]?.parentCommentId && (
+                                  <div className="absolute -top-10 left-0 right-0 p-2 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-between animate-in slide-in-from-bottom-2 duration-300">
+                                    <span className="text-[10px] font-bold text-primary ml-2 uppercase tracking-wide">Replying to {replyState[ticket._id].replyingToName}</span>
+                                    <button onClick={() => handleCancelReply(ticket._id)}><XMarkIcon className="w-4 h-4 text-primary" /></button>
+                                  </div>
+                                )}
+                                <div className="flex flex-col gap-3 bg-white/[0.03] border border-white/5 rounded-2xl p-4 group-focus-within:border-white/20 transition-all">
                                   <textarea
-                                    className="textarea textarea-bordered w-full h-20 resize-none focus:outline-none"
-                                    placeholder={replyState[ticket._id]?.parentCommentId ? "Write a reply..." : "Write a comment..."}
+                                    className="bg-transparent w-full h-24 resize-none text-sm text-white placeholder:text-white/20 focus:outline-none custom-scrollbar font-medium"
+                                    placeholder={replyState[ticket._id]?.parentCommentId ? "Compose your reply..." : "Add your thoughts..."}
                                     value={replyState[ticket._id]?.text || ""}
                                     onChange={(e) => handleCommentChange(ticket._id, e.target.value)}
                                   />
-                                  <button
-                                    className="btn btn-primary h-20"
-                                    disabled={commentLoading[ticket._id]}
-                                    onClick={() => handleSubmitComment(ticket._id)}
-                                  >
-                                    {commentLoading[ticket._id] ? <span className="loading loading-spinner"></span> : <PaperAirplaneIcon className="w-6 h-6 -rotate-45" />}
-                                  </button>
+                                  <div className="flex justify-end pt-2 border-t border-white/5">
+                                    <button
+                                      className="btn btn-primary btn-sm h-10 px-5 rounded-xl font-bold transition-all shadow-lg shadow-primary/10"
+                                      disabled={commentLoading[ticket._id] || !replyState[ticket._id]?.text?.trim()}
+                                      onClick={() => handleSubmitComment(ticket._id)}
+                                    >
+                                      {commentLoading[ticket._id] ? <span className="loading loading-spinner loading-xs mr-2"></span> : <PaperAirplaneIcon className="w-4 h-4 mr-2" />}
+                                      Post Comment
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -515,14 +563,25 @@ function TicketsList() {
           </table>
         </div>
 
-        {/* Pagination Controls */}
-        <div className="flex justify-center mt-6 btn-group">
-          <button className="btn btn-sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>«</button>
-          <button className="btn btn-sm">Page {currentPage}</button>
-          <button className="btn btn-sm" disabled={paginatedTickets.length < itemsPerPage} onClick={() => setCurrentPage(p => p + 1)}>»</button>
+        {/* Improved Pagination */}
+        <div className="p-6 border-t border-white/5 bg-white/[0.01] flex items-center justify-between">
+          <p className="text-xs text-white/20 font-bold uppercase tracking-widest px-2">
+            Showing <span className="text-white/60">{Math.min(filteredTickets.length, (currentPage - 1) * itemsPerPage + 1)}</span> to <span className="text-white/60">{Math.min(filteredTickets.length, currentPage * itemsPerPage)}</span> of {filteredTickets.length} results
+          </p>
+          <div className="flex gap-2">
+            <button className="btn btn-sm h-10 px-4 rounded-xl border-white/10 bg-transparent text-white/60 hover:bg-white/5 disabled:opacity-20" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>
+              Previous
+            </button>
+            <div className="flex items-center justify-center px-4 bg-white/5 rounded-xl text-xs font-bold text-white/80 border border-white/10">
+              {currentPage}
+            </div>
+            <button className="btn btn-sm h-10 px-4 rounded-xl border-white/10 bg-transparent text-white/60 hover:bg-white/5 disabled:opacity-20" disabled={paginatedTickets.length < itemsPerPage} onClick={() => setCurrentPage(p => p + 1)}>
+              Next
+            </button>
+          </div>
         </div>
-      </TitleCard>
-    </>
+      </div>
+    </div>
   );
 }
 
