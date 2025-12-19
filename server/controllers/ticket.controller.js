@@ -1,4 +1,6 @@
 
+import path from "path";
+import { fileURLToPath } from "url";
 import { Types } from "mongoose";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,7 +40,6 @@ export const createTicket = async (req, res, next) => {
   }
 };
 
-import { getTicketsService } from "../services/ticket.service.js";
 
 export const getTickets = async (req, res, next) => {
   try {
@@ -49,7 +50,6 @@ export const getTickets = async (req, res, next) => {
   }
 };
 
-import { getTicketByIdService } from "../services/ticket.service.js";
 
 export const getTicket = async (req, res, next) => {
   try {
@@ -64,7 +64,6 @@ export const getTicket = async (req, res, next) => {
   }
 };
 
-import { updateTicketService } from "../services/ticket.service.js";
 
 export const updateTicket = async (req, res, next) => {
   try {

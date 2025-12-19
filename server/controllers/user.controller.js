@@ -33,6 +33,53 @@ export const getUser = async (req, res, next) => {
   }
 };
 
+export const updateUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    // Only allow users to update their own name, or admins to update anyone
+    if (req.user._id.toString() !== id && req.user.role !== "admin") {
+      const error = new Error("Unauthorized to update this user");
+      error.statusCode = 403;
+      throw error;
+    }
+
+    // Validate name
+    if (!name || name.trim().length === 0) {
+      const error = new Error("Name is required");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (name.trim().length < 2) {
+      const error = new Error("Name must be at least 2 characters");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { name: name.trim() },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User updated successfully",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateUserRole = async (req, res, next) => {
   try {
     const { role } = req.body;
