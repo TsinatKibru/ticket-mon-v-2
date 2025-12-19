@@ -18,10 +18,7 @@ import { authenticateSocket } from "./middlewares/socketAuth.middleware.js";
 const app = express();
 const server = createServer(app);
 
-const allowedOrigins =
-  process.env.NODE_ENV === "production"
-    ? ["https://ticket-mon-v-2.vercel.app"]
-    : ["http://localhost:3000"];
+const allowedOrigins = [process.env.CLIENT_URL];
 
 // Initialize Socket.IO
 const io = new Server(server, {
@@ -74,14 +71,12 @@ io.on("connection", (socket) => {
     const userId = socket.user._id.toString(); // Get userId from the authenticated socket
     socket.join(userId); // Join the user to their room
     console.log(
-      `[INFO] User ${userId} connected | Socket: ${
-        socket.id
+      `[INFO] User ${userId} connected | Socket: ${socket.id
       } | Room: ${userId} | ${new Date().toISOString()}`
     );
   } else {
     console.log(
-      `[ERROR] Authentication failed | Socket ID: ${
-        socket.id
+      `[ERROR] Authentication failed | Socket ID: ${socket.id
       } | Reason: User not authenticated or missing user ID | ${new Date().toISOString()}`
     );
   }

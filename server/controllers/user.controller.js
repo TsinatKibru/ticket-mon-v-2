@@ -99,7 +99,7 @@ export const uploadProfileImage = async (req, res, next) => {
     }
 
     const filePath = req.file.path;
-    const protocol = NODE_ENV === "production" ? "https" : "https";
+    const protocol = NODE_ENV === "production" ? "https" : req.protocol;
     const baseUrl = `${protocol}://${req.get("host")}`;
     const fileUrl = `${baseUrl}/uploads/${path.relative(
       path.join(__dirname, "../uploads"),
@@ -109,7 +109,6 @@ export const uploadProfileImage = async (req, res, next) => {
     // Save the file path to the user's profileImage field
     user.profileImage = fileUrl;
     await user.save();
-    console.log("reached here");
 
     res.status(200).json({
       success: true,

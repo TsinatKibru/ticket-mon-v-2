@@ -4,6 +4,7 @@ import App from "./App";
 import useInitializeAuth from "./hooks/useInitializeAuth";
 import { initializeSocket, disconnectSocket } from "./utils/socket"; // Import socket functions
 import { addNotification } from "./redux/slices/notificationSlice"; // Import Redux action
+import { updateTicket } from "./redux/slices/ticketSlice"; // Import ticket update action
 
 const Root = () => {
   const dispatch = useDispatch();
@@ -21,21 +22,33 @@ const Root = () => {
       socket.on("ticketStatusUpdated", (data) => {
         console.log("Ticket Status Updated:", data);
         dispatch(addNotification(data));
+        if (data.ticket) {
+          dispatch(updateTicket(data.ticket));
+        }
       });
 
       socket.on("ticketAssigned", (data) => {
         console.log("Ticket Assigned:", data);
         dispatch(addNotification(data));
+        if (data.ticket) {
+          dispatch(updateTicket(data.ticket));
+        }
       });
 
       socket.on("newComment", (data) => {
         console.log("New Comment Added:", data);
         dispatch(addNotification(data));
+        if (data.ticket) {
+          dispatch(updateTicket(data.ticket));
+        }
       });
 
       socket.on("attachmentAdded", (data) => {
         console.log("Attachment Added:", data);
         dispatch(addNotification(data));
+        if (data.ticket) {
+          dispatch(updateTicket(data.ticket));
+        }
       });
 
       // Cleanup listeners on unmount

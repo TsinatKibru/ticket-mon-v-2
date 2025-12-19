@@ -2,6 +2,7 @@ import Dashboard from "../pages/Dashboard";
 import Tickets from "../pages/Tickets";
 import TicketDetails from "../pages/TicketDetails";
 import UserList from "../pages/UserList";
+import Settings from "../pages/Settings";
 
 import Squares2X2Icon from "@heroicons/react/24/outline/Squares2X2Icon";
 
@@ -41,6 +42,13 @@ export const routes = [
     icon: <Building2 className={iconClasses} />,
     name: "Departments",
     component: DepartmentsPage,
+    allowedRoles: ["admin", "user", "support_agent"],
+  },
+  {
+    path: "/settings",
+    icon: <UsersIcon className={iconClasses} />,
+    name: "Settings",
+    component: Settings,
     allowedRoles: ["admin", "user", "support_agent"],
   },
 ];

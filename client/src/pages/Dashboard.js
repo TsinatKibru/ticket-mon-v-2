@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import DashboardStats from "../components/DashboardStats";
 import UserGroupIcon from "@heroicons/react/24/outline/UserGroupIcon";
 import {
   ClockIcon,
   WrenchScrewdriverIcon,
   CheckBadgeIcon,
+  ArrowPathIcon,
+  InboxArrowDownIcon,
 } from "@heroicons/react/24/outline";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getUsersContent } from "../redux/slices/userSlice";
-import { ArrowPathIcon, InboxArrowDownIcon } from "@heroicons/react/24/outline";
 import AmountStats from "../components/AmountStats";
 import MyTicketsChart from "../components/MyTicketsChart";
 import TicketStatusChart from "../components/TicketStatusChart";
@@ -18,221 +18,137 @@ import { fetchUsers, fetchTicketsAPi } from "../utils/api";
 import { getTickets } from "../redux/slices/ticketSlice";
 import { setPageTitle } from "../redux/slices/headerSlice";
 
-class Dashboard extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      users: [],
-      tickets: [],
-      loading: true,
-      error: null,
-    };
-  }
+function Dashboard() {
+  const dispatch = useDispatch();
+  const [users, setUsers] = useState([]);
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  componentDidMount() {
-    this.applyTheme();
-    this.fetchData();
-    this.props.setPageTitle({
-      title: "Home",
-    });
-  }
+  useEffect(() => {
+    dispatch(setPageTitle({ title: "Dashboard" }));
+    fetchData();
+    // eslint-disable-next-line
+  }, []);
 
-  applyTheme = () => {
-    const theme = localStorage.getItem("theme") || "light"; // Default to 'light'
-    document.documentElement.setAttribute("data-theme", theme);
-  };
-
-  getStatusIcon = (status) => {
-    switch (status.toLowerCase()) {
-      case "open":
-        return <ClockIcon className="w-10 h-10 text-yellow-500" />;
-      case "inprogress":
-        return <WrenchScrewdriverIcon className="w-10 h-10 text-blue-500" />;
-      case "resolved":
-        return <CheckBadgeIcon className="w-10 h-10 text-green-500" />;
-      default:
-        return <ClockIcon className="w-10 h-10 text-gray-500" />;
-    }
-  };
-
-  fetchData = async () => {
+  const fetchData = async () => {
     try {
-      // Fetch users
-      const usersResponse = await fetchUsers();
-      console.log("res", usersResponse);
+      const usersData = await fetchUsers();
+      const ticketsData = await fetchTicketsAPi();
 
-      if (usersResponse && usersResponse._id === null) {
-        throw new Error(usersResponse.message || "Failed to fetch users");
-      }
+      if (usersData && usersData._id === null) throw new Error(usersData.message);
+      if (ticketsData && ticketsData._id === null) throw new Error(ticketsData.message);
 
-      // Fetch tickets
-      const ticketsResponse = await fetchTicketsAPi();
-      if (ticketsResponse && ticketsResponse._id === null) {
-        throw new Error(ticketsResponse.message || "Failed to fetch tickets");
-      }
-
-      // Update state
-      this.setState({
-        users: usersResponse,
-        tickets: ticketsResponse,
-        loading: false,
-      });
-
-      // Update Redux store (if needed)
-      this.props.getUsersContent(usersResponse);
-      this.props.getTickets(ticketsResponse);
-    } catch (error) {
-      this.setState({
-        error: error.message || "Failed to fetch data. Please try again later.",
-        loading: false,
-      });
-      console.error("Error fetching data:", error);
+      setUsers(usersData);
+      setTickets(ticketsData);
+      dispatch(getUsersContent(usersData));
+      dispatch(getTickets(ticketsData));
+      setLoading(false);
+    } catch (err) {
+      setError(err.message || "Failed to fetch data.");
+      setLoading(false);
     }
   };
 
-  // Calculate ticket status distribution
-  getTicketStatusDistribution = () => {
-    const { tickets } = this.state;
-    const statusCounts = {
-      Open: 0,
-      "In Progress": 0,
-      Resolved: 0,
-    };
+  const getStatusIcon = (status) => {
+    switch (status.toLowerCase()) {
+      case "open": return <ClockIcon className="w-8 h-8 text-secondary" />;
+      case "inprogress": return <WrenchScrewdriverIcon className="w-8 h-8 text-primary" />;
+      case "resolved": return <CheckBadgeIcon className="w-8 h-8 text-success" />;
+      default: return <ClockIcon className="w-8 h-8 text-gray-500" />;
+    }
+  };
 
-    tickets != null &&
-      tickets?.forEach((ticket) => {
-        if (statusCounts[ticket.status]) {
-          statusCounts[ticket.status]++;
-        } else {
-          statusCounts[ticket.status] = 1;
-        }
-      });
-
+  const getTicketStatusDistribution = () => {
+    const statusCounts = { Open: 0, "In Progress": 0, Resolved: 0 };
+    tickets?.forEach((ticket) => {
+      if (statusCounts[ticket.status] !== undefined) statusCounts[ticket.status]++;
+      else statusCounts[ticket.status] = 1;
+    });
     return statusCounts;
   };
 
-  render() {
-    const { users, tickets, loading, error } = this.state;
-
-    if (loading) {
-      return (
-        <div className="px-2 py-6  md:px-6 ">
-          <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-
-          {/* Skeleton for Analytics Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {[1, 2, 3].map((item) => (
-              <div key={item} className="skeleton h-32 w-full"></div>
-            ))}
-          </div>
-
-          {/* Skeleton for Charts Section */}
-          <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
-            <div className="skeleton h-64 w-full"></div>
-            <div className="skeleton h-64 w-full"></div>
-          </div>
-
-          {/* Skeleton for Ticket Status Distribution Section */}
-          <div className="px-0 py-6  md:px-6  rounded-lg shadow-md mb-8">
-            <h2 className="text-lg font-semibold mb-4">
-              Ticket Status Distribution
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[1, 2, 3].map((item) => (
-                <div key={item} className="skeleton h-24 w-full"></div>
-              ))}
-            </div>
-          </div>
-
-          {/* Skeleton for Recent Tickets Section */}
-          <div className="skeleton h-64 w-full"></div>
-        </div>
-      );
-    }
-
-    if (error) {
-      return <div className="text-red-500">{error}</div>;
-    }
-
-    const ticketStatusDistribution = this.getTicketStatusDistribution();
-
+  if (loading) {
     return (
-      <div className="px-2 py-6  md:px-6  ">
-        <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
-
-        {/* Analytics Section */}
+      <div className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {users && (
-            <DashboardStats
-              title={"Total Users"}
-              icon={<UserGroupIcon className="w-8 h-8" />}
-              value={users.length}
-              description={"↗︎ 2300 (22%)"}
-              colorIndex={1}
-            />
-          )}
-          {tickets && (
-            <DashboardStats
-              title={"Total Tickets"}
-              icon={<InboxArrowDownIcon className="w-8 h-8" />}
-              value={tickets.length}
-              description={"↗︎ 2300 (22%)"}
-              colorIndex={3}
-            />
-          )}
-          <DashboardStats
-            title={"Open Tickets"}
-            icon={<ArrowPathIcon className="w-8 h-8" />}
-            value={ticketStatusDistribution.Open}
-            description={"↗︎ 2300 (22%)"}
-            colorIndex={3}
-          />
+          {[1, 2, 3].map((i) => <div key={i} className="skeleton h-32 w-full rounded-xl"></div>)}
         </div>
-
-        {/* Charts Section */}
-        <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
-          {tickets != null && (
-            <>
-              <MyTicketsChart tickets={tickets} />
-              <TicketStatusChart tickets={tickets} />
-            </>
-          )}
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="skeleton h-64 w-full rounded-xl"></div>
+          <div className="skeleton h-64 w-full rounded-xl"></div>
         </div>
-
-        {/* Ticket Status Distribution Section */}
-        <div className="px-0 py-6  md:px-6  rounded-lg shadow-md mb-8">
-          <h2 className="px-6 md:px-0 text-lg font-semibold mb-4">
-            Ticket Status Distribution
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {Object.entries(ticketStatusDistribution).map(([status, count]) => (
-              <div key={status} className="p-4 rounded-lg">
-                <AmountStats
-                  title={status}
-                  icon={this.getStatusIcon(status)}
-                  value={count}
-                  colorIndex={3}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Recent Tickets Section */}
-        {tickets != null && <RecentTickets tickets={tickets} />}
       </div>
     );
   }
+
+  if (error) return <div className="p-6 text-error text-center font-bold">{error}</div>;
+
+  const statusDist = getTicketStatusDistribution();
+
+  return (
+    <div className="p-6">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <DashboardStats
+          title="Total Users"
+          icon={<UserGroupIcon className="w-8 h-8 text-primary" />}
+          value={users?.length || 0}
+          description="Active Platform Users"
+          colorIndex={0}
+        />
+        <DashboardStats
+          title="Total Tickets"
+          icon={<InboxArrowDownIcon className="w-8 h-8 text-secondary" />}
+          value={tickets?.length || 0}
+          description="All time tickets"
+          colorIndex={1}
+        />
+        <DashboardStats
+          title="Open Issues"
+          icon={<ArrowPathIcon className="w-8 h-8 text-accent" />}
+          value={statusDist.Open}
+          description="Currently needing attention"
+          colorIndex={2}
+        />
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid lg:grid-cols-2 gap-6 mb-8">
+        <div className="card bg-base-100 shadow-xl p-4">
+          <h3 className="font-bold text-lg mb-4 text-center">Ticket Volume</h3>
+          <MyTicketsChart tickets={tickets} />
+        </div>
+        <div className="card bg-base-100 shadow-xl p-4">
+          <h3 className="font-bold text-lg mb-4 text-center">Status Breakdown</h3>
+          <TicketStatusChart tickets={tickets} />
+        </div>
+      </div>
+
+      {/* Distribution Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {Object.entries(statusDist).map(([status, count]) => (
+          <div key={status} className="stats shadow-lg bg-base-100 border border-base-200">
+            <div className="stat">
+              <div className="stat-figure text-primary">
+                {getStatusIcon(status)}
+              </div>
+              <div className="stat-title font-bold">{status}</div>
+              <div className="stat-value text-2xl">{count}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Recent Tickets */}
+      <div className="card bg-base-100 shadow-xl">
+        <div className="card-body">
+          <h2 className="card-title mb-4">Recent Activity</h2>
+          <RecentTickets tickets={tickets} />
+        </div>
+      </div>
+    </div>
+  );
 }
 
-const mapStateToProps = (state) => ({
-  users: state.user.users,
-});
-
-const mapDispatchToProps = {
-  getUsersContent,
-  getTickets,
-  setPageTitle,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default Dashboard;

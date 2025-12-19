@@ -13,6 +13,7 @@ import {
   autoAssignTicket,
 } from "../controllers/ticket.controller.js";
 import authorize from "../middlewares/auth.middleware.js";
+import { ticketValidation, validate } from "../middlewares/validation.middleware.js";
 import { upload } from "../middlewares/multer.js";
 
 const ticketRouter = Router();
@@ -33,6 +34,8 @@ ticketRouter.post(
   "/",
   authorize(["user", "admin", "support_agent"]),
   upload.single("attachment"), // Use the upload middleware
+  ticketValidation,
+  validate,
   createTicket
 );
 ticketRouter.put(

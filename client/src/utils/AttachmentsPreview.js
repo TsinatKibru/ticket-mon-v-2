@@ -81,6 +81,8 @@ import {
   PresentationChartBarIcon,
   PlusCircleIcon,
   BackspaceIcon,
+  ArrowUpTrayIcon
+  ,
 } from "@heroicons/react/24/outline";
 import axios from "./axiosConfig";
 import { useDispatch } from "react-redux";
@@ -235,22 +237,28 @@ function AttachmentsPreview({ attachments, ticketId, status }) {
 
       {/* Add new attachment button */}
       {status !== "Resolved" && (
-        <div className="flex flex-col items-center p-2 bg-white dark:bg-transparent rounded-lg shadow-sm">
+        <div className="flex flex-col items-center justify-center p-4 bg-base-100 border-2 border-dashed border-base-300 rounded-lg hover:border-primary cursor-pointer transition-colors duration-200">
           <label
             htmlFor="file-upload"
-            className="cursor-pointer flex flex-col items-center"
+            className="cursor-pointer flex flex-col items-center w-full h-full"
           >
-            {/* <PlusCircleIcon className="max-w-48 max-h-48 mb-2 text-gray-400 hover:text-gray-600" /> */}
             {selectedFile ? (
-              <img
-                src={URL.createObjectURL(selectedFile)}
-                alt="Selected"
-                className="max-w-24 max-h-24 mb-2 rounded-lg"
-              />
+              <div className="relative group">
+                <img
+                  src={URL.createObjectURL(selectedFile)}
+                  alt="Selected"
+                  className="max-w-24 max-h-24 mb-2 rounded-lg object-cover"
+                />
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg text-white text-xs">
+                  Change
+                </div>
+              </div>
             ) : (
-              <PlusCircleIcon className="max-w-48 max-h-48 mb-2 text-gray-400 hover:text-gray-600" />
+              <>
+                <ArrowUpTrayIcon className="h-8 w-8 text-base-content/50 mb-2" />
+                <span className="text-xs font-semibold text-base-content/70">Upload File</span>
+              </>
             )}
-            <span className="text-sm text-gray-500">Add Attachment</span>
             <input
               id="file-upload"
               name="file-upload"
@@ -260,14 +268,24 @@ function AttachmentsPreview({ attachments, ticketId, status }) {
               disabled={isUploading}
             />
           </label>
+
           {selectedFile && (
-            <button
-              onClick={handleUpload}
-              disabled={isUploading}
-              className="mt-2 flex items-center bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-3 rounded-lg transition-colors duration-200 disabled:bg-blue-300 disabled:cursor-not-allowed"
-            >
-              {isUploading ? "Uploading..." : "Upload"}
-            </button>
+            <div className="flex gap-2 mt-2 w-full">
+              <button
+                onClick={handleUpload}
+                disabled={isUploading}
+                className="btn btn-primary btn-xs flex-1"
+              >
+                {isUploading ? "..." : "Upload"}
+              </button>
+              <button
+                onClick={() => setSelectedFile(null)}
+                disabled={isUploading}
+                className="btn btn-ghost btn-xs text-error"
+              >
+                ✕
+              </button>
+            </div>
           )}
         </div>
       )}

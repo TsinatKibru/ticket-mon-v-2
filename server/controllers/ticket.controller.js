@@ -1,52 +1,32 @@
-import path from "path";
-import { fileURLToPath } from "url";
-import Ticket from "../models/ticket.model.js";
-import fs from "fs";
 
-import url from "url";
-import { io } from "../app.js";
-import { generateNotificationMessage } from "../utils/notifications.util.js";
-import Department from "../models/department.model.js";
-import {
-  leastRecentlyAssigned,
-  loadBalancing,
-  roundRobin,
-} from "../utils/assignmentAlgorithms.js";
 import { Types } from "mongoose";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import {
+  createTicketService,
+  getTicketsService,
+  getTicketByIdService,
+  updateTicketService,
+  updateTicketStatusService,
+  assignTicketService,
+  addCommentService,
+  deleteTicketService,
+  addAttachmentService,
+  deleteAttachmentService,
+  autoAssignTicketService
+} from "../services/ticket.service.js";
+
 export const createTicket = async (req, res, next) => {
   try {
-    const { title, description, priority, category } = req.body;
-    const created_by = req.user._id;
-
-    // Initialize the attachments array
-    let attachments = [];
-
-    // If a file is uploaded, construct the file URL
-    if (req.file) {
-      const filePath = req.file.path;
-      const baseUrl = `${req.protocol}://${req.get("host")}`;
-      const fileUrl = `${baseUrl}/uploads/${path.relative(
-        path.join(__dirname, "../uploads"),
-        filePath
-      )}`;
-      attachments.push(fileUrl); // Add the file URL to the attachments array
-    }
-
-    const newTicket = new Ticket({
-      title,
-      description,
-      priority,
-      category,
-      created_by,
-      attachments,
-    });
-
-    await newTicket.save();
-    await newTicket.populate("created_by", "name email");
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const newTicket = await createTicketService(
+      req.body,
+      req.user._id,
+      req.file,
+      baseUrl
+    );
 
     res.status(201).json({
       success: true,
@@ -58,105 +38,41 @@ export const createTicket = async (req, res, next) => {
   }
 };
 
+import { getTicketsService } from "../services/ticket.service.js";
+
 export const getTickets = async (req, res, next) => {
   try {
-    let query = {};
-    if (req.user.role === "user") {
-      query = { created_by: req.user._id };
-    }
-
-    const tickets = await Ticket.find(query)
-      .populate("created_by", "name email")
-      .populate("assigned_to", "name email")
-      .populate({
-        path: "comments.created_by",
-        select: "name email",
-      })
-      .populate({
-        path: "comments.replies.created_by",
-        select: "name email",
-      });
-
+    const tickets = await getTicketsService(req.user._id, req.user.role);
     res.status(200).json({ success: true, data: tickets });
   } catch (error) {
     next(error);
   }
 };
 
+import { getTicketByIdService } from "../services/ticket.service.js";
+
 export const getTicket = async (req, res, next) => {
   try {
-    const ticket = await Ticket.findById(req.params.id)
-      .populate("created_by", "name email")
-      .populate("assigned_to", "name email")
-      .populate({
-        path: "comments.created_by",
-        select: "name email",
-      })
-      .populate({
-        path: "comments.replies.created_by",
-        select: "name email",
-      });
-
-    if (!ticket) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Ticket not found" });
-    }
-
-    // Only allow access if the user is an admin/support or the ticket creator
-    if (
-      req.user.role !== "admin" &&
-      req.user.role !== "support_agent" &&
-      !ticket.created_by._id.equals(req.user._id)
-    ) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Unauthorized access" });
-    }
-
+    const ticket = await getTicketByIdService(
+      req.params.id,
+      req.user._id,
+      req.user.role
+    );
     res.status(200).json({ success: true, data: ticket });
   } catch (error) {
     next(error);
   }
 };
 
+import { updateTicketService } from "../services/ticket.service.js";
+
 export const updateTicket = async (req, res, next) => {
   try {
-    const ticket = await Ticket.findById(req.params.id);
-
-    if (!ticket) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Ticket not found" });
-    }
-
-    // Only allow the ticket owner to update their own ticket
-    if (!ticket.created_by._id.equals(req.user._id)) {
-      return res.status(403).json({
-        success: false,
-        message: "Unauthorized to update this ticket",
-      });
-    }
-
-    const { title, description, priority, category } = req.body;
-
-    // Update fields if provided
-    if (title) ticket.title = title;
-    if (description) ticket.description = description;
-    if (priority) ticket.priority = priority;
-    if (category) ticket.category = category;
-
-    await ticket.save();
-    await ticket.populate("created_by", "name email");
-    await ticket.populate("assigned_to", "name email");
-    await ticket.populate({
-      path: "comments.created_by",
-      select: "name email",
-    });
-    await ticket.populate({
-      path: "comments.replies.created_by",
-      select: "name email",
-    });
+    const ticket = await updateTicketService(
+      req.params.id,
+      req.user._id,
+      req.body
+    );
 
     res.status(200).json({
       success: true,
@@ -170,38 +86,19 @@ export const updateTicket = async (req, res, next) => {
 
 export const updateTicketStatus = async (req, res, next) => {
   try {
-    if (req.user.role !== "admin" && req.user.role !== "support_agent") {
-      return res
-        .status(403)
-        .json({ success: false, message: "Unauthorized to update status" });
-    }
-
-    const { status } = req.body;
-    const validStatuses = ["Open", "In Progress", "Resolved"];
-
-    if (!validStatuses.includes(status)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid status" });
-    }
-
-    const ticket = await Ticket.findByIdAndUpdate(
+    const ticket = await updateTicketStatusService(
       req.params.id,
-      { status },
-      { new: true }
+      req.body.status,
+      req.user._id,
+      req.user.role
     );
 
-    if (!ticket) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Ticket not found" });
-    }
     // const notificationMessage = `Ticket "${ticket.title}" status updated to ${status}.`;
     const notificationMessage = generateNotificationMessage({
       type: "status",
       reqUser: req.user,
       ticket: ticket,
-      status: status,
+      status: req.body.status,
     });
 
     if (!ticket.created_by._id.equals(req.user._id)) {
@@ -230,25 +127,13 @@ export const updateTicketStatus = async (req, res, next) => {
 
 export const assignTicket = async (req, res, next) => {
   try {
-    if (req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ success: false, message: "Unauthorized to assign tickets" });
-    }
-
-    const { assigned_to } = req.body;
-
-    const ticket = await Ticket.findByIdAndUpdate(
+    const ticket = await assignTicketService(
       req.params.id,
-      { assigned_to },
-      { new: true }
+      req.body.assigned_to,
+      req.user._id,
+      req.user.role
     );
 
-    if (!ticket) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Ticket not found" });
-    }
     const notificationMessageAssign = generateNotificationMessage({
       type: "assign",
       reqUser: req.user,
@@ -331,52 +216,13 @@ export const addComment = async (req, res, next) => {
   try {
     const { text, parentCommentId } = req.body;
 
-    // Check if the comment text is empty
-    if (!text || text.trim().length === 0) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Comment cannot be empty" });
-    }
-
-    const ticket = await Ticket.findById(req.params.id);
-
-    if (!ticket) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Ticket not found" });
-    }
-
-    if (parentCommentId) {
-      // This is a reply to an existing comment
-      const parentComment = ticket.comments.id(parentCommentId);
-      if (!parentComment) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Parent comment not found" });
-      }
-
-      const reply = {
-        text,
-        created_by: req.user._id,
-      };
-      parentComment.replies.push(reply);
-    } else {
-      // This is a new top-level comment
-      const newComment = { text, created_by: req.user._id };
-      ticket.comments.push(newComment);
-    }
-
-    await ticket.save();
-    await ticket.populate("created_by", "name email");
-    await ticket.populate("assigned_to", "name email");
-    await ticket.populate({
-      path: "comments.created_by",
-      select: "name email",
-    });
-    await ticket.populate({
-      path: "comments.replies.created_by",
-      select: "name email",
-    });
+    // Call service to add comment
+    const ticket = await addCommentService(
+      req.params.id,
+      text,
+      parentCommentId,
+      req.user._id
+    );
 
     // Generate notification message
     const notificationMessage = generateNotificationMessage({
@@ -421,24 +267,8 @@ export const addComment = async (req, res, next) => {
 };
 export const deleteTicket = async (req, res, next) => {
   try {
-    if (req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ success: false, message: "Unauthorized to delete tickets" });
-    }
-
-    const ticket = await Ticket.findById(req.params.id);
-
-    if (!ticket) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Ticket not found" });
-    }
-    await ticket.deleteOne();
-
-    res
-      .status(200)
-      .json({ success: true, message: "Ticket deleted successfully" });
+    const result = await deleteTicketService(req.params.id, req.user.role);
+    res.status(200).json({ success: true, message: result.message });
   } catch (error) {
     next(error);
   }
@@ -446,25 +276,12 @@ export const deleteTicket = async (req, res, next) => {
 
 export const addAttachment = async (req, res, next) => {
   try {
-    const ticket = await Ticket.findById(req.params.id);
-
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
-
-    // Construct the full URL for the uploaded file
-    const filePath = req.file.path;
     const baseUrl = `${req.protocol}://${req.get("host")}`;
-    const fileUrl = `${baseUrl}/uploads/${path.relative(
-      path.join(__dirname, "../uploads"),
-      filePath
-    )}`;
-
-    // Add the file URL to the ticket's attachments array
-    ticket.attachments.push(fileUrl);
-
-    await ticket.populate("created_by", "name email");
-    await ticket.save();
+    const { ticket, fileUrl } = await addAttachmentService(
+      req.params.id,
+      req.file,
+      baseUrl
+    );
 
     // Notify the ticket creator and assigned user
     // const notificationMessage = `New attachment added to ticket: ${ticket.title}`;
@@ -504,42 +321,7 @@ export const addAttachment = async (req, res, next) => {
 export const deleteAttachment = async (req, res, next) => {
   try {
     const { id, attachmentIndex } = req.params;
-
-    const ticket = await Ticket.findById(id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
-
-    // Check if the attachment index is valid
-    if (
-      !ticket.attachments ||
-      attachmentIndex < 0 ||
-      attachmentIndex >= ticket.attachments.length
-    ) {
-      return res.status(400).json({ message: "Invalid attachment index" });
-    }
-
-    // Extract actual file path from the full URL
-    const attachmentUrl = ticket.attachments[attachmentIndex];
-    const parsedUrl = url.parse(attachmentUrl);
-    let filePath = decodeURIComponent(parsedUrl.pathname).replace(
-      /^\/uploads\//,
-      ""
-    ); // Remove leading `/uploads/`
-
-    const fullPath = path.join(__dirname, "../uploads", filePath);
-
-    // Delete the file from the storage
-    if (fs.existsSync(fullPath)) {
-      fs.unlinkSync(fullPath);
-      console.log(`[INFO] Deleted attachment: ${fullPath}`);
-    } else {
-      console.warn(`[WARNING] Attachment not found: ${fullPath}`);
-    }
-
-    // Remove the attachment from the ticket
-    ticket.attachments.splice(attachmentIndex, 1);
-    await ticket.save();
+    const ticket = await deleteAttachmentService(id, attachmentIndex);
 
     res.status(200).json({
       success: true,
@@ -554,78 +336,11 @@ export const deleteAttachment = async (req, res, next) => {
 
 export const autoAssignTicket = async (req, res, next) => {
   try {
-    if (req.user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ success: false, message: "Unauthorized to assign tickets" });
-    }
-
-    const isValidObjectId = (id) => Types.ObjectId.isValid(id);
-
-    const { departmentId } = req.body;
-    if (!isValidObjectId(departmentId)) {
-      return res
-        .status(400)
-        .json({ message: "Bad Request: Invalid department ID format" });
-    }
-    const ticket = await Ticket.findById(req.params.id);
-
-    if (!ticket) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Ticket not found" });
-    }
-
-    const department = await Department.findById(departmentId).populate(
-      "users"
+    const ticket = await autoAssignTicketService(
+      req.params.id,
+      req.body.departmentId,
+      req.user.role
     );
-    if (!department) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Department not found" });
-    }
-    if (department.users.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "No users available in the department",
-      });
-    }
-
-    let assignedUserId;
-
-    switch (department.assignmentAlgorithm) {
-      case "roundRobin":
-        assignedUserId = roundRobin(
-          department.users,
-          department.lastAssignedUserId
-        );
-        break;
-      case "leastRecentlyAssigned":
-        assignedUserId = await leastRecentlyAssigned(department.users);
-        break;
-      case "loadBalancing":
-        assignedUserId = await loadBalancing(department.users);
-        break;
-      default:
-        return res
-          .status(400)
-          .json({ success: false, message: "Invalid assignment algorithm" });
-    }
-
-    if (!assignedUserId) {
-      return res.status(400).json({
-        success: false,
-        message: "No users available in the department",
-      });
-    }
-
-    // Update the ticket and department
-    ticket.assigned_to = assignedUserId;
-    ticket.department = departmentId;
-    await ticket.save();
-
-    department.lastAssignedUserId = assignedUserId; // For Round Robin
-    await department.save();
 
     res.status(200).json({
       success: true,

@@ -1,6 +1,8 @@
+
+
 import { themeChange } from "theme-change";
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import BellIcon from "@heroicons/react/24/outline/BellIcon";
 import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
 import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
@@ -8,244 +10,117 @@ import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import { openRightDrawer } from "../redux/slices/rightDrawerSlice";
 import { RIGHT_DRAWER_TYPES } from "../utils/globalConstantUtil";
 import { Link } from "react-router-dom";
-import axios from "axios"; // Import axios for making HTTP requests
-import { updateUser } from "../redux/slices/userSlice";
 import socket from "../utils/socket";
-import { setUser } from "../redux/slices/authSlice";
-import { LogOutIcon, SparklesIcon, UploadIcon } from "lucide-react";
+import { LogOutIcon, UserIcon } from "lucide-react";
+import { fixImageUrl } from "../utils/imageUtils";
 
-class Header extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentTheme: localStorage.getItem("theme") || "light",
-      profileImage: this.props.auth.user?.profileImage || "/dummyprofile.jpeg", // Default profile image
-    };
-  }
+function Header() {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+  const { pageTitle } = useSelector((state) => state.header);
+  const { notifications } = useSelector((state) => state.notification);
 
-  componentDidMount() {
+  const [currentTheme, setCurrentTheme] = useState(localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
     themeChange(false);
-    if (!this.state.currentTheme) {
-      this.setState({
-        currentTheme: window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light",
-      });
+    if (!localStorage.getItem("theme")) {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      setCurrentTheme(isDark ? "dark" : "light");
     }
-  }
+  }, []);
 
-  openNotification = () => {
-    this.props.openRightDrawer({
+  const openNotification = () => {
+    dispatch(openRightDrawer({
       header: "Notifications",
       bodyType: RIGHT_DRAWER_TYPES.NOTIFICATION,
-    });
+    }));
   };
 
-  logoutUser = () => {
+  const logoutUser = () => {
     if (socket) {
-      socket.disconnect(); // Disconnect from the socket server
+      socket.disconnect();
     }
     localStorage.removeItem("token");
     window.location.href = "/login";
   };
 
-  // Handle profile image upload
-  handleProfileImageUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  return (
+    <div className="navbar sticky top-0 bg-base-100/80 backdrop-blur-md z-10 shadow-sm border-b border-base-200">
+      <div className="flex-1">
+        <label
+          htmlFor="left-sidebar-drawer"
+          className="btn btn-ghost drawer-button lg:hidden"
+        >
+          <Bars3Icon className="h-5 inline-block w-5" />
+        </label>
+        <h1 className="text-xl font-bold ml-2 text-primary">{pageTitle}</h1>
+      </div>
 
-    const formData = new FormData();
-    formData.append("profileImage", file);
+      <div className="flex-none gap-2">
+        {/* Theme Toggle */}
+        <label className="swap swap-rotate btn btn-ghost btn-circle">
+          <input type="checkbox" />
+          <SunIcon
+            data-set-theme="light"
+            data-act-class="ACTIVECLASS"
+            className={`fill-current w-5 h-5 ${currentTheme === "dark" ? "swap-on" : "swap-off"}`}
+          />
+          <MoonIcon
+            data-set-theme="dark"
+            data-act-class="ACTIVECLASS"
+            className={`fill-current w-5 h-5 ${currentTheme === "light" ? "swap-on" : "swap-off"}`}
+          />
+        </label>
 
-    try {
-      const response = await axios.post(
-        `/api/v1/users/${this.props.auth.user._id}/upload-profile-image`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      // Update the profile image in the state
-      this.setState({ profileImage: response.data.data.profileImage });
-
-      // Optionally, update the user in the Redux store
-      this.props.updateUser({ updatedUser: response.data.data });
-      this.props.setUser(response.data.data);
-    } catch (error) {
-      console.error("Error uploading profile image:", error);
-    }
-  };
-
-  render() {
-    const { currentTheme, profileImage } = this.state;
-    const { user } = this.props.auth;
-    const { notifications } = this.props;
-    const { pageTitle } = this.props;
-
-    return (
-      <>
-        <div className="navbar sticky top-0 bg-base-100 z-10 shadow-md">
-          {/* Menu toggle for mobile view or small screen */}
-          <div className="flex-1">
-            <label
-              htmlFor="left-sidebar-drawer"
-              className="btn btn-primary drawer-button lg:hidden"
-            >
-              <Bars3Icon className="h-5 inline-block w-5" />
-            </label>
-            <h1 className="text-xl  ml-2">{pageTitle}</h1>
+        {/* Notifications */}
+        <button
+          className="btn btn-ghost btn-circle"
+          onClick={openNotification}
+        >
+          <div className="indicator">
+            <BellIcon className="h-6 w-6" />
+            {notifications.length > 0 && (
+              <span className="indicator-item badge badge-primary badge-xs">
+                {notifications.length}
+              </span>
+            )}
           </div>
+        </button>
 
-          <div className="flex-none">
-            <label className="swap">
-              <input type="checkbox" />
-              <SunIcon
-                data-set-theme="light"
-                data-act-class="ACTIVECLASS"
-                className={
-                  "fill-current w-6 h-6 " +
-                  (currentTheme === "dark" ? "swap-on" : "swap-off")
-                }
-              />
-              <MoonIcon
-                data-set-theme="dark"
-                data-act-class="ACTIVECLASS"
-                className={
-                  "fill-current w-6 h-6 " +
-                  (currentTheme === "light" ? "swap-on" : "swap-off")
-                }
-              />
-            </label>
-
-            {/* Notification icon */}
-            <button
-              className="btn btn-ghost ml-4 btn-circle"
-              onClick={this.openNotification}
-            >
-              <div className="indicator">
-                <BellIcon className="h-6 w-6" />
-                {notifications.length > 0 ? (
-                  <span className="indicator-item badge badge-secondary badge-sm">
-                    {notifications.length}
-                  </span>
-                ) : null}
-              </div>
-            </button>
-
-            {/* Profile icon, opening menu on click */}
-            {/* <div className="dropdown dropdown-end ml-4">
-              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                <div className="w-10 rounded-full">
-                  <img src={user?.profileImage || profileImage} alt="profile" />
-                </div>
-              </label>
-              <ul
-                tabIndex={0}
-                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                <li className="justify-between">
-                  <Link to={"/app/"}>
-                    {user?.name}
-                    <span className="badge">New</span>
-                  </Link>
-                </li>
-
-                
-                <li>
-                  <label
-                    htmlFor="profileImageUpload"
-                    className="cursor-pointer"
-                  >
-                    Upload Profile Image
-                  </label>
-                  <input
-                    id="profileImageUpload"
-                    type="file"
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    onChange={this.handleProfileImageUpload}
-                  />
-                </li>
-
-                <div className="divider mt-0 mb-0"></div>
-                <li>
-                  <a onClick={this.logoutUser}>Logout</a>
-                </li>
-              </ul>
-            </div> */}
-            <div className="dropdown dropdown-end ml-4">
-              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-                <div className="w-10 rounded-full">
-                  <img src={user?.profileImage || profileImage} alt="profile" />
-                </div>
-              </label>
-              <ul
-                tabIndex={0}
-                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
-              >
-                <li className="justify-between">
-                  <Link to={"/app/"}>
-                    {user?.name}
-                    <span className="badge">
-                      <SparklesIcon className="h-4 w-4" />{" "}
-                      {/* Replace "New" with an icon */}
-                    </span>
-                  </Link>
-                </li>
-
-                {/* Add a file input for uploading profile image */}
-                <li>
-                  <label
-                    htmlFor="profileImageUpload"
-                    className="cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2">
-                      <UploadIcon className="h-4 w-4" />{" "}
-                      {/* Add an icon for upload */}
-                      <span>Upload Profile Image</span>
-                    </div>
-                  </label>
-                  <input
-                    id="profileImageUpload"
-                    type="file"
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    onChange={this.handleProfileImageUpload}
-                  />
-                </li>
-
-                <div className="divider mt-0 mb-0"></div>
-                <li>
-                  <a onClick={this.logoutUser}>
-                    <div className="flex items-center gap-2">
-                      <LogOutIcon className="h-4 w-4" />{" "}
-                      {/* Add an icon for logout */}
-                      <span>Logout</span>
-                    </div>
-                  </a>
-                </li>
-              </ul>
+        {/* Profile Dropdown */}
+        <div className="dropdown dropdown-end">
+          <label tabIndex={0} className="btn btn-ghost btn-circle avatar ring ring-primary/20 ring-offset-base-100 ring-offset-2">
+            <div className="w-10 rounded-full">
+              <img src={fixImageUrl(user?.profileImage) || "/dummyprofile.jpeg"} alt="profile" />
             </div>
-          </div>
+          </label>
+          <ul
+            tabIndex={0}
+            className="menu menu-compact dropdown-content mt-3 p-2 shadow-lg bg-base-100 rounded-box w-52 border border-base-200"
+          >
+            <li className="menu-title">
+              <span>{user?.email}</span>
+            </li>
+            <li>
+              <Link to={"/app/settings"} className="justify-between">
+                <div className="flex items-center gap-2">
+                  <UserIcon className="h-4 w-4" />
+                  Profile Settings
+                </div>
+              </Link>
+            </li>
+            <div className="divider my-0"></div>
+            <li>
+              <a onClick={logoutUser} className="text-error">
+                <LogOutIcon className="h-4 w-4" /> Logout
+              </a>
+            </li>
+          </ul>
         </div>
-      </>
-    );
-  }
+      </div>
+    </div>
+  );
 }
 
-const mapStateToProps = (state) => ({
-  users: state.user.users,
-  auth: state.auth,
-  notifications: state.notification.notifications,
-  pageTitle: state.header.pageTitle,
-});
-
-const mapDispatchToProps = {
-  updateUser,
-  openRightDrawer,
-  setUser,
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;

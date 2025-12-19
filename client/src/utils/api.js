@@ -145,3 +145,15 @@ export const deleteAttachment = async (ticketId, attachmentIndex) => {
     console.error("Error deleting attachment:", error);
   }
 };
+
+export const addCommentApi = async (ticketId, text, parentCommentId = null) => {
+  try {
+    const response = await axios.post(`/api/v1/tickets/${ticketId}/comments`, {
+      text,
+      parentCommentId,
+    });
+    return response.data.data;
+  } catch (error) {
+    return handleError(error, "Error adding comment");
+  }
+};
