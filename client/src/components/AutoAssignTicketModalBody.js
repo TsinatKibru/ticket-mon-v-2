@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { showNotification } from "../redux/slices/headerSlice";
 import { assignTicketAction } from "../redux/slices/ticketSlice";
 import axios from "../utils/axiosConfig";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 const AutoAssignTicketModalBody = ({ closeModal, extraObject }) => {
   const { ticketId } = extraObject;

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { showNotification } from "../redux/slices/headerSlice";
 import { addCommentToTicket } from "../redux/slices/ticketSlice";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 const AddCommentModalBody = ({ closeModal, extraObject }) => {
   const { ticketId } = extraObject;

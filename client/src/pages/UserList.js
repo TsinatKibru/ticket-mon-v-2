@@ -20,8 +20,7 @@ import {
 import TrashIcon from "@heroicons/react/24/outline/TrashIcon";
 import { showNotification } from "../redux/slices/headerSlice";
 
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 import { AlertCircle, Plus } from "lucide-react";
 import { fixImageUrl } from "../utils/imageUtils";
 

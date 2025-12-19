@@ -5,7 +5,7 @@ import { setPageTitle } from "../redux/slices/headerSlice";
 import { useEffect } from "react";
 import axios from "axios";
 import { setUser } from "../redux/slices/authSlice";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { UserIcon, UploadIcon, CameraIcon } from "lucide-react";
 import { fixImageUrl } from "../utils/imageUtils";
 

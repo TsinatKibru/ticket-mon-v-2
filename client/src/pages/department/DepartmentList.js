@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, AlertCircle, Users } from "lucide-react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setStatus } from "../../redux/slices/departmentsSlice";
 import { MemberListModal } from "./MemberListModal";
@@ -107,68 +107,68 @@ export function DepartmentList({
             <tbody>
               {status === "idle" || status === "loading"
                 ? Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i} className="animate-pulse">
-                      <td className="py-3">
-                        <div className="skeleton h-4 w-24"></div>
-                      </td>
-                      <td className="py-3">
-                        <div className="skeleton h-4 w-40"></div>
-                      </td>
-                      <td className="py-3">
-                        <div className="skeleton h-4 w-16"></div>
-                      </td>
-                      <td className="py-3">
-                        <div className="skeleton h-4 w-20"></div>
-                      </td>
-                      <td className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <div className="skeleton h-8 w-8 rounded-full"></div>
-                          <div className="skeleton h-8 w-8 rounded-full"></div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                  <tr key={i} className="animate-pulse">
+                    <td className="py-3">
+                      <div className="skeleton h-4 w-24"></div>
+                    </td>
+                    <td className="py-3">
+                      <div className="skeleton h-4 w-40"></div>
+                    </td>
+                    <td className="py-3">
+                      <div className="skeleton h-4 w-16"></div>
+                    </td>
+                    <td className="py-3">
+                      <div className="skeleton h-4 w-20"></div>
+                    </td>
+                    <td className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <div className="skeleton h-8 w-8 rounded-full"></div>
+                        <div className="skeleton h-8 w-8 rounded-full"></div>
+                      </div>
+                    </td>
+                  </tr>
+                ))
                 : filteredDepartments.map((department) => (
-                    <tr key={department._id} className="hover:bg-base-200">
-                      <td className="font-medium text-base-content">
-                        {department.name}
-                      </td>
-                      <td className="text-base-content/60 line-clamp-2">
-                        {department.description}
-                      </td>
-                      {/* <td className="text-base-content/60">
+                  <tr key={department._id} className="hover:bg-base-200">
+                    <td className="font-medium text-base-content">
+                      {department.name}
+                    </td>
+                    <td className="text-base-content/60 line-clamp-2">
+                      {department.description}
+                    </td>
+                    {/* <td className="text-base-content/60">
                       {department.users.length} members
                     </td> */}
-                      <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => setSelectedDepartment(department)}
+                        className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                      >
+                        <Users size={16} />
+                        <span>{department.users.length} members</span>
+                      </button>
+                    </td>
+                    <td className="text-base-content/60">
+                      {department.assignmentAlgorithm || "Round Robin"}
+                    </td>
+                    <td className="text-right">
+                      <div className="flex justify-end gap-2">
                         <button
-                          onClick={() => setSelectedDepartment(department)}
-                          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800"
+                          onClick={() => onEditDepartment(department)}
+                          className="btn btn-ghost btn-sm text-primary"
                         >
-                          <Users size={16} />
-                          <span>{department.users.length} members</span>
+                          <Pencil size={18} />
                         </button>
-                      </td>
-                      <td className="text-base-content/60">
-                        {department.assignmentAlgorithm || "Round Robin"}
-                      </td>
-                      <td className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <button
-                            onClick={() => onEditDepartment(department)}
-                            className="btn btn-ghost btn-sm text-primary"
-                          >
-                            <Pencil size={18} />
-                          </button>
-                          <button
-                            onClick={() => onDeleteDepartment(department._id)}
-                            className="btn btn-ghost btn-sm text-error"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        <button
+                          onClick={() => onDeleteDepartment(department._id)}
+                          className="btn btn-ghost btn-sm text-error"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

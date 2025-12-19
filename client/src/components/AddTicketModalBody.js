@@ -133,8 +133,7 @@ import InputText from "./Input/InputText";
 import ErrorText from "./ErrorText";
 import { addTicket } from "../redux/slices/ticketSlice";
 import { addTicketsAPi } from "../utils/api";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 
 const INITIAL_TICKET_OBJ = {
   title: "",

@@ -4,7 +4,7 @@ import { setPageTitle } from "../redux/slices/headerSlice";
 import TitleCard from "../components/TitleCard";
 import { PlusIcon, PencilIcon, TrashIcon, PlayIcon } from "@heroicons/react/24/outline";
 import { getAutomations, deleteAutomation, createAutomation, updateAutomation } from "../utils/automationApi";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 function Automation() {
     const dispatch = useDispatch();

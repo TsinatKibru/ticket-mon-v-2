@@ -10,7 +10,7 @@ import {
   updateTicket,
 } from "../redux/slices/ticketSlice";
 import { addCommentApi } from "../utils/api";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import {
   CONFIRMATION_MODAL_CLOSE_TYPES,
   MODAL_BODY_TYPES,

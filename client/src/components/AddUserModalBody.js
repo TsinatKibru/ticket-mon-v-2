@@ -4,8 +4,7 @@ import InputText from "./Input/InputText";
 import ErrorText from "./ErrorText";
 import { addNewUser as addNewUserAction } from "../redux/slices/userSlice";
 import { addNewUser } from "../utils/api";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 
 const INITIAL_USER_OBJ = {
   name: "",

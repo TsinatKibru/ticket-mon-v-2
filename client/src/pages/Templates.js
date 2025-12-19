@@ -4,7 +4,7 @@ import { setPageTitle } from "../redux/slices/headerSlice";
 import TitleCard from "../components/TitleCard";
 import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getTemplates, deleteTemplate, createTemplate, updateTemplate } from "../utils/templateApi";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 function Templates() {
     const dispatch = useDispatch();

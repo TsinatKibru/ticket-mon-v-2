@@ -3,7 +3,7 @@ import axios from "./axiosConfig";
 import { useDispatch } from "react-redux";
 import { updateTicket } from "../redux/slices/ticketSlice";
 import { FolderPlusIcon, PaperClipIcon } from "@heroicons/react/24/outline";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 function AttachmentUploader({ ticketId, status }) {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -46,11 +46,10 @@ function AttachmentUploader({ ticketId, status }) {
         {/* File Input */}
         <label
           htmlFor="file-upload"
-          className={`flex items-center space-x-2 bg-gray-100 p-2 rounded-lg ${
-            status === "Resolved"
+          className={`flex items-center space-x-2 bg-gray-100 p-2 rounded-lg ${status === "Resolved"
               ? "opacity-50 cursor-not-allowed"
               : "cursor-pointer hover:bg-gray-200 transition-colors duration-200"
-          }`}
+            } `}
         >
           <PaperClipIcon className="h-5 w-5 text-gray-600" aria-hidden="true" />
           <span className="text-sm text-gray-700">Choose File</span>

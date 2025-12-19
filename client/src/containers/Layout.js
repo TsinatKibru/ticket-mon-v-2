@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import PageContent from "./PageContent";
 import LeftSidebar from "./LeftSidebar";
-// import NotificationContainer from "./NotificationContainer";
 import ModalLayout from "../components/ModalLayout";
-import { NotificationContainer } from "react-notifications";
-import { toast, ToastContainer } from "react-toastify"; // Import react-toastify
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "sonner";
 import RightSidebar from "./RightSidebar";
 
 class Layout extends Component {
@@ -23,8 +20,15 @@ class Layout extends Component {
           <LeftSidebar />
         </div>
 
-        {/* Notification layout container */}
-        <ToastContainer />
+        {/* Premium Notification System */}
+        <Toaster
+          position="top-right"
+          richColors
+          expand={true}
+          closeButton
+          duration={4000}
+        />
+
         <RightSidebar />
 
         {/* Modal layout container */}

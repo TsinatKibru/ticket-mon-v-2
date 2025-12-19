@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import InputText from "./Input/InputText";
 import ErrorText from "./ErrorText";
 import { updateTicket } from "../redux/slices/ticketSlice";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 import { updateTicketsAPi } from "../utils/api";
 
@@ -39,7 +39,7 @@ function UpdateTicketModalBody({ closeModal, extraObject }) {
     } catch (error) {
       setErrorMessage(
         error.response?.data?.error ||
-          "Failed to update ticket. Please try again."
+        "Failed to update ticket. Please try again."
       );
     } finally {
       setLoading(false);

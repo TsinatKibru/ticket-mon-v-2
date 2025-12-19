@@ -87,7 +87,7 @@ import {
 import axios from "./axiosConfig";
 import { useDispatch } from "react-redux";
 import { updateTicket } from "../redux/slices/ticketSlice";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { deleteAttachment, uploadAttachment } from "./api";
 
 function AttachmentsPreview({ attachments, ticketId, status }) {

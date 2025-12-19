@@ -6,8 +6,7 @@ import {
 import { deleteTicketsAPi, deleteUserById } from "../utils/api";
 import { deleteTicket, deleteUserTickets } from "../redux/slices/ticketSlice";
 import { deleteUser } from "../redux/slices/userSlice";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "sonner";
 import { useState } from "react";
 import { deleteDepartment } from "../redux/slices/departmentsSlice";
 
