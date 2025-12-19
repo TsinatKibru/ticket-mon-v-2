@@ -87,64 +87,87 @@ function Dashboard() {
   const statusDist = getTicketStatusDistribution();
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6 space-y-8 min-h-screen">
+      {/* Welcome Header */}
+      <div className="flex flex-col gap-1 ml-1">
+        <h1 className="text-3xl font-bold text-white font-outfit tracking-tight">System Overview</h1>
+        <p className="text-neutral-content/60 text-sm">Real-time stats and performance metrics</p>
+      </div>
+
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <DashboardStats
           title="Total Users"
-          icon={<UserGroupIcon className="w-8 h-8 text-primary" />}
+          icon={<UserGroupIcon className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />}
           value={users?.length || 0}
-          description="Active Platform Users"
+          description="Active platform participants"
           colorIndex={0}
         />
         <DashboardStats
           title="Total Tickets"
-          icon={<InboxArrowDownIcon className="w-8 h-8 text-secondary" />}
+          icon={<InboxArrowDownIcon className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />}
           value={tickets?.length || 0}
-          description="All time tickets"
+          description="Consolidated ticket volume"
           colorIndex={1}
         />
         <DashboardStats
           title="Open Issues"
-          icon={<ArrowPathIcon className="w-8 h-8 text-accent" />}
+          icon={<ArrowPathIcon className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />}
           value={statusDist.Open}
-          description="Currently needing attention"
+          description="Awaiting agent response"
           colorIndex={2}
         />
       </div>
 
-      {/* Charts Section */}
-      <div className="grid lg:grid-cols-2 gap-6 mb-8">
-        <div className="card bg-base-100 shadow-xl p-4">
-          <h3 className="font-bold text-lg mb-4 text-center">Ticket Volume</h3>
-          <MyTicketsChart tickets={tickets} />
-        </div>
-        <div className="card bg-base-100 shadow-xl p-4">
-          <h3 className="font-bold text-lg mb-4 text-center">Status Breakdown</h3>
-          <TicketStatusChart tickets={tickets} />
-        </div>
-      </div>
-
-      {/* Distribution Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {Object.entries(statusDist).map(([status, count]) => (
-          <div key={status} className="stats shadow-lg bg-base-100 border border-base-200">
-            <div className="stat">
-              <div className="stat-figure text-primary">
-                {getStatusIcon(status)}
-              </div>
-              <div className="stat-title font-bold">{status}</div>
-              <div className="stat-value text-2xl">{count}</div>
+      <div className="grid lg:grid-cols-3 gap-8">
+        {/* Charts Section */}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="glass-effect rounded-3xl p-8 border border-white/5 shadow-2xl relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-right from-primary/50 to-transparent opacity-30"></div>
+            <h3 className="font-bold text-xl mb-8 text-white font-outfit flex items-center gap-3">
+              <span className="w-1.5 h-6 bg-primary rounded-full"></span>
+              Ticket Volume Trends
+            </h3>
+            <div className="h-[300px]">
+              <MyTicketsChart tickets={tickets} />
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* Recent Tickets */}
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title mb-4">Recent Activity</h2>
-          <RecentTickets tickets={tickets} />
+          {/* Recent Tickets Container */}
+          <div className="glass-effect rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
+            <div className="px-8 py-6 border-b border-white/5 flex justify-between items-center">
+              <h2 className="font-bold text-xl text-white font-outfit">Recent Activity</h2>
+              <button className="text-xs font-semibold text-primary hover:text-primary-focus transition-colors uppercase tracking-widest">
+                View All
+              </button>
+            </div>
+            <div className="p-2">
+              <RecentTickets tickets={tickets} />
+            </div>
+          </div>
+        </div>
+
+        {/* Right Sidebar on Dashboard */}
+        <div className="space-y-8">
+          <div className="glass-effect rounded-3xl p-8 border border-white/5 shadow-2xl">
+            <h3 className="font-bold text-xl mb-8 text-white font-outfit text-center">Status Distribution</h3>
+            <div className="h-[250px]">
+              <TicketStatusChart tickets={tickets} />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {Object.entries(statusDist).map(([status, count]) => (
+              <AmountStats
+                key={status}
+                status={status}
+                title={status}
+                value={count}
+                icon={getStatusIcon(status)}
+                colorIndex={status === "Resolved" ? 1 : 0}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

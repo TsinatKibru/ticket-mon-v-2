@@ -1,33 +1,19 @@
 function DashboardStats({ title, icon, value, description, colorIndex }) {
-  const COLORS = ["primary", "primary"];
-
-  const getDescStyle = () => {
-    if (description.includes("↗︎"))
-      return "font-bold text-green-700 dark:text-green-300";
-    else if (description.includes("↙"))
-      return "font-bold text-rose-500 dark:text-red-400";
-    else return "";
-  };
-
   return (
-    <div className="stats shadow">
-      <div className="stat">
-        <div
-          className={`stat-figure dark:text-slate-300 text-${
-            COLORS[colorIndex % 2]
-          }`}
-        >
+    <div className="glass-effect glass-item rounded-2xl p-6 border border-white/5 shadow-xl hover:bg-white/[0.05] transition-all duration-300 group">
+      <div className="flex items-center justify-between mb-4">
+        <div className="p-3 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
           {icon}
         </div>
-        <div className="stat-title dark:text-slate-300">{title}</div>
-        <div
-          className={`stat-value dark:text-slate-300 text-${
-            COLORS[colorIndex % 2]
-          }`}
-        >
-          {value}
+        <div className="text-right">
+          <p className="text-sm font-medium text-neutral-content/60 font-outfit uppercase tracking-wider">{title}</p>
+          <h3 className="text-3xl font-bold text-white mt-1">{value}</h3>
         </div>
-        <div className={"stat-desc  " + getDescStyle()}>{description}</div>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-medium text-neutral-content/40 leading-relaxed">
+          {description}
+        </span>
       </div>
     </div>
   );

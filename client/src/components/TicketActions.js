@@ -85,7 +85,7 @@
 //                     openTicketStatusChangeModal(ticket._id);
 //                     toggleActions(); // Close the menu
 //                   }}
-//                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+//                   className="block w-full text-left px-4 py-2 text-sm text-neutral-content hover:bg-white/10 transition-colors"
 //                   role="menuitem"
 //                 >
 //                   <CheckCircleIcon className="w-5 h-5 inline mr-2" /> Update
@@ -162,7 +162,7 @@ const TicketActions = ({
       {showActions && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-300 ring-1 ring-black ring-opacity-5 focus:outline-none"
+          className="absolute right-0 mt-2 w-56 rounded-xl shadow-2xl glass-effect border-white/10 z-50 overflow-hidden"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
@@ -176,7 +176,7 @@ const TicketActions = ({
                     openAssignTicketModal(ticket._id);
                     toggleActions(); // Close the menu
                   }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="block w-full text-left px-4 py-2 text-sm text-neutral-content hover:bg-white/10 transition-colors"
                   role="menuitem"
                 >
                   <UserPlusIcon className="w-5 h-5 inline mr-2" /> Assign
@@ -186,7 +186,7 @@ const TicketActions = ({
                     openAutoAssignTicketModal(ticket._id); // Trigger Auto Assign
                     toggleActions(); // Close the menu
                   }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="block w-full text-left px-4 py-2 text-sm text-neutral-content hover:bg-white/10 transition-colors"
                   role="menuitem"
                 >
                   <SparklesIcon className="w-5 h-5 inline mr-2" /> Auto Assign
@@ -199,7 +199,7 @@ const TicketActions = ({
                   openUpdateTicketModal(ticket);
                   toggleActions(); // Close the menu
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block w-full text-left px-4 py-2 text-sm text-neutral-content hover:bg-white/10 transition-colors"
                 role="menuitem"
                 tabIndex="-1"
               >
@@ -214,7 +214,7 @@ const TicketActions = ({
                     openTicketStatusChangeModal(ticket._id);
                     toggleActions(); // Close the menu
                   }}
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className="block w-full text-left px-4 py-2 text-sm text-neutral-content hover:bg-white/10 transition-colors"
                   role="menuitem"
                   tabIndex="-1"
                 >
@@ -228,7 +228,7 @@ const TicketActions = ({
                   openConfirmTicketDelete(ticket._id);
                   toggleActions(); // Close the menu
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block w-full text-left px-4 py-2 text-sm text-error hover:bg-rose-500/10 transition-colors"
                 role="menuitem"
                 tabIndex="-1"
               >

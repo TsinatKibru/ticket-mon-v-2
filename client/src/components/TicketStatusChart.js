@@ -72,13 +72,25 @@ function TicketStatusChart({ tickets }) {
 
   const options = {
     responsive: true,
+    scales: {
+      y: {
+        ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+      },
+      x: {
+        ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+        grid: { display: false }
+      }
+    },
     plugins: {
       legend: {
         position: "top",
+        labels: { color: '#fff' }
       },
       title: {
         display: true,
         text: "Ticket Status Distribution",
+        color: '#fff'
       },
     },
   };

@@ -113,68 +113,88 @@ function LeftSidebar() {
   const { user } = useSelector((state) => state.auth);
 
   const closeSidebar = () => {
-    document.getElementById("left-sidebar-drawer").click();
+    const drawer = document.getElementById("left-sidebar-drawer");
+    if (drawer) drawer.click();
   };
 
   return (
     <div className="drawer-side z-30">
       <label htmlFor="left-sidebar-drawer" className="drawer-overlay"></label>
-      <ul className="menu pt-2 w-72 bg-neutral text-neutral-content min-h-full">
-        {/* Close button */}
+      <div className="w-72 min-h-full premium-sidebar flex flex-col text-neutral-content sidebar-glass">
+        {/* Close button for mobile */}
         <button
-          className="btn btn-ghost btn-circle z-50 top-0 right-0 mt-2 mr-2 absolute lg:hidden text-white"
+          className="btn btn-ghost btn-circle z-50 top-4 right-4 absolute lg:hidden text-white hover:bg-white/10"
           onClick={closeSidebar}
         >
-          <XMarkIcon className="h-5 w-5 inline-block" />
+          <XMarkIcon className="h-6 w-6" />
         </button>
 
-        {/* Logo and Title */}
-        <li className="mb-6 font-semibold text-xl px-4 mt-2">
-          <Link to="/app/dashboard" className="flex items-center gap-3 hover:bg-transparent">
-            <Boxes className="h-9 w-9 text-primary-content" />
-            <span className="text-2xl font-bold tracking-wide">TaskFlow</span>
+        {/* Branding Section */}
+        <div className="px-8 py-10">
+          <Link to="/app/dashboard" className="flex items-center gap-3 group transition-all duration-300">
+            <div className="p-2 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors logo-glow">
+              <Boxes className="h-8 w-8 text-primary shadow-primary/50 shadow-sm" />
+            </div>
+            <span className="text-2xl font-bold tracking-tight text-white font-outfit">
+              TaskFlow
+            </span>
           </Link>
-        </li>
+        </div>
 
-        {/* Sidebar Menu Items */}
-        {routes
-          .filter(route => !route.allowedRoles || route.allowedRoles.includes(user?.role))
-          .map((route, k) => (
-            <li key={k} className="mb-1">
-              {route.submenu ? (
-                <SidebarSubmenu {...route} />
-              ) : (
-                <NavLink
-                  end
-                  to={`/app${route.path}`}
-                  className={({ isActive }) =>
-                    `${isActive
-                      ? "bg-primary text-white shadow-lg"
-                      : "hover:bg-neutral-focus"
-                    } font-medium py-3 px-4 rounded-lg my-1 mx-2 transition-all duration-200`
-                  }
-                  onClick={closeSidebar}
-                >
-                  {route.icon} <span className="text-base ml-2">{route.name}</span>
-                </NavLink>
-              )}
-            </li>
-          ))}
+        {/* Navigation Section */}
+        <nav className="flex-1 px-4 space-y-2 overflow-y-auto custom-scrollbar">
+          {routes
+            .filter(route => !route.allowedRoles || route.allowedRoles.includes(user?.role))
+            .map((route, k) => (
+              <div key={k} className="group">
+                {route.submenu ? (
+                  <SidebarSubmenu {...route} />
+                ) : (
+                  <NavLink
+                    end
+                    to={`/app${route.path}`}
+                    className={({ isActive }) =>
+                      `flex items-center gap-4 py-3 px-4 rounded-xl transition-all duration-300 glass-item ${isActive
+                        ? "active-nav-item"
+                        : "text-neutral-content/60 hover:text-white"
+                      }`
+                    }
+                    onClick={closeSidebar}
+                  >
+                    <span className="text-xl transition-transform duration-300 group-hover:scale-110">
+                      {route.icon}
+                    </span>
+                    <span className="text-[15px] font-medium tracking-wide">
+                      {route.name}
+                    </span>
+                  </NavLink>
+                )}
+              </div>
+            ))}
+        </nav>
 
-        <li className="mt-auto border-t border-neutral-focus/30 pt-6 px-4 pb-6">
-          <div className="flex items-center gap-3">
-            <img
-              src={fixImageUrl(user?.profileImage) || "/intro.png"}
-              alt="profile"
-              className="w-10 h-10 rounded-full border-2 border-primary/50"
-            />
-            <div className="overflow-hidden">
-              <p className="font-bold text-sm truncate">{user?.name}</p>
-              <p className="text-xs text-neutral-content/70 truncate w-40" title={user?.email}>{user?.email}</p>
+        {/* Profile Footer Section */}
+        <div className="p-4 mt-auto">
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4 glass-item group hover:bg-white/[0.08]">
+            <div className="relative">
+              <img
+                src={fixImageUrl(user?.profileImage) || "/intro.png"}
+                alt="profile"
+                className="w-11 h-11 rounded-xl object-cover ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all shadow-lg shadow-black/20"
+              />
+              <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-500 border-2 border-[#1a1c23] rounded-full"></div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-white truncate font-outfit">
+                {user?.name}
+              </p>
+              <p className="text-[11px] text-neutral-content/50 truncate tracking-wider uppercase font-semibold">
+                {user?.role?.replace("_", " ")}
+              </p>
             </div>
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   );
 }

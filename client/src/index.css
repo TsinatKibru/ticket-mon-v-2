@@ -1,5 +1,170 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[data-theme='business'] {
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --sidebar-bg: #0a0a0c;
+    --accent-glow: rgba(124, 58, 237, 0.2);
+    --main-bg: #0f1014;
+}
+
+/* Premium Dark Theme Overrides */
+[data-theme='business'] .bg-base-100 {
+    background-color: var(--main-bg) !important;
+    color: #fff !important;
+}
+
+[data-theme='business'] .bg-base-200 {
+    background-color: #16171d !important;
+}
+
+[data-theme='business'] body {
+    background-color: var(--main-bg);
+    color: #fff;
+}
+
+[data-theme='business'] .card {
+    background-color: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+[data-theme='business'] .text-base-content {
+    color: #fff !important;
+}
+
+[data-theme='business'] .stat-title {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.font-outfit {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Skeleton / Shimmer Theme Overrides */
+[data-theme='business'] .skeleton {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-image: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0,
+            rgba(255, 255, 255, 0.05) 50%,
+            rgba(255, 255, 255, 0) 100%) !important;
+}
+
+[data-theme='business'] .modal-box {
+    background-color: #16171d !important;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    color: #fff;
+}
+
+[data-theme='business'] .input,
+[data-theme='business'] .select,
+[data-theme='business'] .textarea {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+[data-theme='business'] .input:focus,
+[data-theme='business'] .select:focus,
+[data-theme='business'] .textarea:focus {
+    border-color: #7c3aed !important;
+    outline: none !important;
+}
+
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+}
+
+.sidebar-glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-right: 1px solid var(--glass-border);
+}
+
+.glass-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.active-nav-item {
+    background: linear-gradient(90deg, rgba(124, 58, 237, 0.2) 0%, rgba(124, 58, 237, 0) 100%);
+    border-left: 3px solid #7c3aed;
+    color: #fff !important;
+}
+
+.active-nav-item svg {
+    color: #7c3aed;
+    filter: drop-shadow(0 0 5px rgba(124, 58, 237, 0.5));
+}
+
+.premium-sidebar {
+    background: var(--sidebar-bg);
+}
+
+.logo-glow {
+    filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.4));
+}
+
+/* Global Table Refresh */
+table {
+    border-collapse: separate;
+    border-spacing: 0 4px;
+}
+
+thead th {
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    border: none !important;
+    font-family: 'Outfit', sans-serif !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    font-size: 11px !important;
+}
+
+tbody tr {
+    background: rgba(255, 255, 255, 0.02);
+    transition: all 0.2s;
+}
+
+tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-1px);
+}
+
+td {
+    border: none !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}

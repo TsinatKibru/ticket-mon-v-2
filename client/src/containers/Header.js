@@ -60,16 +60,21 @@ function Header() {
       <div className="flex-none gap-2">
         {/* Theme Toggle */}
         <label className="swap swap-rotate btn btn-ghost btn-circle">
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            onChange={(e) => {
+              const newTheme = e.target.checked ? "business" : "light";
+              setCurrentTheme(newTheme);
+              localStorage.setItem("theme", newTheme);
+              document.documentElement.setAttribute('data-theme', newTheme);
+            }}
+            checked={currentTheme === "business"}
+          />
           <SunIcon
-            data-set-theme="light"
-            data-act-class="ACTIVECLASS"
-            className={`fill-current w-5 h-5 ${currentTheme === "dark" ? "swap-on" : "swap-off"}`}
+            className="swap-on fill-current w-5 h-5"
           />
           <MoonIcon
-            data-set-theme="dark"
-            data-act-class="ACTIVECLASS"
-            className={`fill-current w-5 h-5 ${currentTheme === "light" ? "swap-on" : "swap-off"}`}
+            className="swap-off fill-current w-5 h-5"
           />
         </label>
 
