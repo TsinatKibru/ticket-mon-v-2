@@ -66,59 +66,82 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center justify-center bg-gradient-to-br from-base-200 to-base-300">
-      <div className="card mx-auto w-full max-w-5xl shadow-2xl">
-        <div className="grid md:grid-cols-2 grid-cols-1 bg-base-100 rounded-xl overflow-hidden">
-          <div className="">
-            <LandingIntro />
-          </div>
-          <div className="py-24 px-10">
-            <h2 className="text-3xl font-bold mb-2 text-center text-primary">Login</h2>
-            <p className="text-center mb-8 text-base-content/60">Welcome back, please login to continue</p>
+    <div className="min-h-screen minimal-bg flex items-center justify-center p-6 lg:p-12">
+      <div className="w-full max-w-[1100px] minimal-card rounded-[40px] overflow-hidden flex flex-col md:flex-row shadow-2xl animate-in fade-in zoom-in-95 duration-1000">
 
-            <form onSubmit={submitForm}>
-              <div className="mb-4">
+        {/* Left Side: Minimal Branding */}
+        <div className="w-full md:w-[45%] border-b md:border-b-0 md:border-r border-white/5 bg-white/[0.01]">
+          <LandingIntro />
+        </div>
+
+        {/* Right Side: Clean Login Form */}
+        <div className="flex-1 py-16 px-8 md:px-20 flex flex-col justify-center">
+          <div className="max-w-sm mx-auto w-full">
+            <header className="mb-12">
+              <h2 className="text-4xl font-bold mono-gradient-text font-outfit tracking-tighter mb-3">
+                Sign In
+              </h2>
+              <p className="text-white/40 font-medium text-sm">
+                Enter your credentials to access your dashboard.
+              </p>
+            </header>
+
+            <form onSubmit={submitForm} className="space-y-8">
+              <div className="space-y-6">
                 <InputText
                   type="email"
                   defaultValue={loginObj.email}
                   updateType="email"
-                  containerStyle="mt-4"
-                  labelTitle="Email"
+                  labelTitle="Professional Email"
                   updateFormValue={updateFormValue}
                 />
 
-                <InputText
-                  defaultValue={loginObj.password}
-                  type="password"
-                  updateType="password"
-                  containerStyle="mt-4"
-                  labelTitle="Password"
-                  updateFormValue={updateFormValue}
-                />
+                <div className="space-y-2">
+                  <InputText
+                    defaultValue={loginObj.password}
+                    type="password"
+                    updateType="password"
+                    labelTitle="Password"
+                    updateFormValue={updateFormValue}
+                  />
+                  <div className="text-right">
+                    <span className="text-[11px] font-bold text-white/30 hover:text-white/60 transition-colors uppercase tracking-widest cursor-pointer">
+                      Forgot Password?
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div className="text-right text-primary hover:underline text-sm mb-4 cursor-pointer">
-                Forgot Password?
-              </div>
-
-              <ErrorText styleClass="mt-8">{errorMessage}</ErrorText>
+              {errorMessage && (
+                <div className="bg-error/5 border border-error/20 p-4 rounded-2xl animate-in fade-in slide-in-from-top-2">
+                  <ErrorText styleClass="text-sm text-center">{errorMessage}</ErrorText>
+                </div>
+              )}
 
               <button
                 type="submit"
-                className={`btn mt-2 w-full btn-primary text-white font-bold transition-all duration-300 ${loading ? "loading" : ""
-                  }`}
+                className={`w-full h-14 bg-white text-black font-bold rounded-2xl hover:bg-white/90 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 ${loading ? "opacity-70 cursor-wait" : ""}`}
                 disabled={loading}
               >
-                {loading ? "Logging In..." : "Login"}
+                {loading ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    <span>Authenticating...</span>
+                  </>
+                ) : (
+                  "Continue"
+                )}
               </button>
 
-              <div className="text-center mt-6">
-                Don't have an account yet?{" "}
-                <Link to="/register">
-                  <span className="inline-block hover:text-primary hover:underline hover:cursor-pointer transition duration-200 font-semibold">
-                    Register
-                  </span>
-                </Link>
+              <div className="text-center">
+                <p className="text-white/30 text-sm font-medium">
+                  New member?{" "}
+                  <Link to="/register">
+                    <span className="text-white hover:underline transition-all">
+                      Create an account
+                    </span>
+                  </Link>
+                </p>
               </div>
             </form>
           </div>

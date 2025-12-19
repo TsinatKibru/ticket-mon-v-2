@@ -23,8 +23,8 @@ function InputText({
 
   return (
     <div className={`form-control w-full ${containerStyle}`}>
-      <label className="label">
-        <span className={"label-text text-base-content " + labelStyle}>
+      <label className="label py-1">
+        <span className={"label-text text-[11px] font-bold uppercase tracking-[0.15em] text-white/30 " + labelStyle}>
           {labelTitle}
         </span>
       </label>
@@ -33,7 +33,7 @@ function InputText({
         value={value}
         placeholder={placeholder || ""}
         onChange={(e) => updateInputValue(e.target.value)}
-        className="input  input-bordered w-full "
+        className="input w-full bg-white/[0.03] border-white/10 rounded-xl focus:border-white/30 focus:bg-white/[0.05] transition-all duration-300 text-sm h-12"
       />
     </div>
   );
