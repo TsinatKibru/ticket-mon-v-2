@@ -38,7 +38,7 @@ function Login() {
       dispatch(login({ token, user }));
 
       // Navigate to app
-      navigate("/app/dashboard");
+      navigate("/app/");
     } catch (error) {
       const msg =
         error.response?.data?.error ||
