@@ -90,8 +90,8 @@ function Dashboard() {
     <div className="p-4 md:p-6 space-y-8 min-h-screen">
       {/* Welcome Header */}
       <div className="flex flex-col gap-1 ml-1">
-        <h1 className="text-3xl font-bold text-white font-outfit tracking-tight">System Overview</h1>
-        <p className="text-neutral-content/60 text-sm">Real-time stats and performance metrics</p>
+        <h1 className="text-3xl font-bold font-outfit tracking-tight">System Overview</h1>
+        <p className="text-base-content/60 text-sm">Real-time stats and performance metrics</p>
       </div>
 
       {/* Stats Grid */}
@@ -122,9 +122,9 @@ function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Charts Section */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="glass-effect rounded-3xl p-8 border border-white/5 shadow-2xl relative overflow-hidden group">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-right from-primary/50 to-transparent opacity-30"></div>
-            <h3 className="font-bold text-xl mb-8 text-white font-outfit flex items-center gap-3">
+          <div className="glass-effect rounded-3xl p-8 shadow-2xl relative overflow-hidden group">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/50 to-transparent opacity-30"></div>
+            <h3 className="font-bold text-xl mb-8 font-outfit flex items-center gap-3">
               <span className="w-1.5 h-6 bg-primary rounded-full"></span>
               Ticket Volume Trends
             </h3>
@@ -134,9 +134,9 @@ function Dashboard() {
           </div>
 
           {/* Recent Tickets Container */}
-          <div className="glass-effect rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
+          <div className="glass-effect rounded-3xl shadow-2xl overflow-hidden">
             <div className="px-8 py-6 border-b border-white/5 flex justify-between items-center">
-              <h2 className="font-bold text-xl text-white font-outfit">Recent Activity</h2>
+              <h2 className="font-bold text-xl font-outfit">Recent Activity</h2>
               <button className="text-xs font-semibold text-primary hover:text-primary-focus transition-colors uppercase tracking-widest">
                 View All
               </button>
@@ -149,8 +149,8 @@ function Dashboard() {
 
         {/* Right Sidebar on Dashboard */}
         <div className="space-y-8">
-          <div className="glass-effect rounded-3xl p-8 border border-white/5 shadow-2xl">
-            <h3 className="font-bold text-xl mb-8 text-white font-outfit text-center">Status Distribution</h3>
+          <div className="glass-effect rounded-3xl p-8 shadow-2xl">
+            <h3 className="font-bold text-xl mb-8 font-outfit text-center">Status Distribution</h3>
             <div className="h-[250px]">
               <TicketStatusChart tickets={tickets} />
             </div>

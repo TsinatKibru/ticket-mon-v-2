@@ -30,10 +30,12 @@ function RecentTickets({ tickets }) {
               <tr key={ticket._id}>
                 <th>{k + 1}</th>
                 <td>{ticket.title}</td>
-                <td>{ticket.status}</td>
+                <td className="text-secondary font-semibold">{ticket.status}</td>
                 <td>{ticket.priority}</td>
-                <td>{ticket.created_by?.name}</td>
-                <td>{format(ticket.createdAt, "yyyy-MM-dd")}</td>
+                <td className="font-medium">{ticket.created_by?.name}</td>
+                <td className="text-base-content/70">
+                  {format(new Date(ticket.createdAt), "dd MMM yyyy")}
+                </td>
               </tr>
             ))}
           </tbody>

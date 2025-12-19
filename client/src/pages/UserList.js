@@ -89,8 +89,8 @@ class UserList extends Component {
       <div className="p-4 md:p-6 space-y-6 min-h-screen">
         <div className="flex justify-between items-center ml-1">
           <div>
-            <h1 className="text-3xl font-bold text-white font-outfit tracking-tight">Active Members</h1>
-            <p className="text-neutral-content/60 text-sm">Manage roles and permissions across the platform</p>
+            <h1 className="text-3xl font-bold font-outfit tracking-tight">Active Members</h1>
+            <p className="text-base-content/60 text-sm">Manage roles and permissions across the platform</p>
           </div>
           <button
             className="btn btn-primary px-8 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all font-outfit"
@@ -101,7 +101,7 @@ class UserList extends Component {
           </button>
         </div>
 
-        <div className="glass-effect rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
+        <div className="glass-effect rounded-3xl shadow-2xl overflow-hidden">
           <div className="overflow-x-auto w-full">
             <table className="table w-full custom-table">
               <thead>
@@ -112,7 +112,7 @@ class UserList extends Component {
                   <th className="text-right px-8">Actions</th>
                 </tr>
               </thead>
-              <tbody className="text-white">
+              <tbody className="">
                 {userstatus === "idle"
                   ? Array.from({ length: 5 }).map((_, i) => (
                     <tr key={i} className="animate-pulse border-b border-white/5">
@@ -143,32 +143,32 @@ class UserList extends Component {
                           </div>
                           <div className="min-w-0">
                             <p className="font-bold text-base truncate">{user.name}</p>
-                            <p className="text-xs text-neutral-content/50 truncate tracking-wide">{user.email}</p>
+                            <p className="text-xs text-base-content/50 truncate tracking-wide">{user.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="text-neutral-content/60 font-medium">
+                      <td className="text-base-content/60 font-medium">
                         {format(new Date(user.createdAt), "MMM dd, yyyy")}
                       </td>
                       <td>
                         <select
                           disabled={user._id === currentUser._id}
-                          className={`select select-sm rounded-lg glass-effect border-white/10 font-semibold text-xs tracking-wide min-w-[140px] appearance-none focus:ring-1 focus:ring-primary/40 ${user.role === 'admin' ? 'text-primary' : 'text-neutral-content'
+                          className={`select select-sm rounded-lg glass-effect border-white/10 font-semibold text-xs tracking-wide min-w-[140px] appearance-none focus:ring-1 focus:ring-primary/40 ${user.role === 'admin' ? 'text-primary' : 'text-base-content'
                             }`}
                           value={user.role}
                           onChange={(e) =>
                             this.handleRoleChange(user._id, e.target.value)
                           }
                         >
-                          <option value="user" className="bg-[#1a1c23] text-white">USER</option>
-                          <option value="admin" className="bg-[#1a1c23] text-white">ADMIN</option>
-                          <option value="support_agent" className="bg-[#1a1c23] text-white">SUPPORT AGENT</option>
+                          <option value="user">USER</option>
+                          <option value="admin">ADMIN</option>
+                          <option value="support_agent">SUPPORT AGENT</option>
                         </select>
                       </td>
                       <td className="text-right px-8">
                         <button
                           disabled={user._id === currentUser._id}
-                          className="btn btn-square btn-ghost btn-sm text-neutral-content/40 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
+                          className="btn btn-square btn-ghost btn-sm text-base-content/40 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
                           onClick={() => this.openConfirmUserDelete(k)}
                         >
                           <TrashIcon className="w-5 h-5" />
@@ -181,11 +181,11 @@ class UserList extends Component {
 
             {users.length === 0 && userstatus !== "idle" && (
               <div className="p-20 text-center">
-                <AlertCircle className="mx-auto h-16 w-16 text-neutral-content/10" />
-                <h3 className="mt-6 text-xl font-bold text-white font-outfit">
+                <AlertCircle className="mx-auto h-16 w-16 text-base-content/10" />
+                <h3 className="mt-6 text-xl font-bold font-outfit">
                   No Members Found
                 </h3>
-                <p className="mt-2 text-neutral-content/40 text-sm max-w-xs mx-auto">
+                <p className="mt-2 text-base-content/40 text-sm max-w-xs mx-auto">
                   It seems there are no users matching your criteria or the database is currently empty.
                 </p>
                 <button

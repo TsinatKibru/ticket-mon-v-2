@@ -280,7 +280,7 @@ function TicketsList() {
 
         {/* Filters Drawer */}
         {showFilters && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 glass-effect rounded-2xl mb-6 shadow-xl animate-fade-in-down border-white/5">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-6 glass-effect rounded-2xl mb-6 shadow-xl animate-fade-in-down">
             <div className="form-control">
               <label className="label"><span className="label-text">Status</span></label>
               <select className="select select-bordered select-sm" value={filters.status} onChange={(e) => handleFilterChange('status', e.target.value)}>
@@ -359,7 +359,7 @@ function TicketsList() {
                       <div className={`badge badge-sm ${ticket.priority === 'High' ? 'badge-error' :
                         ticket.priority === 'Medium' ? 'badge-warning' :
                           'badge-info'
-                        } text-white`}>
+                        } text-base-100 font-bold`}>
                         {ticket.priority}
                       </div>
                     </td>

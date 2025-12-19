@@ -5,9 +5,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    /* Slightly more opaque for light mode depth */
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    --sidebar-glass-bg: rgba(255, 255, 255, 0.05);
+    --sidebar-glass-border: rgba(255, 255, 255, 0.12);
+    --sidebar-main-bg: #0a0a0c;
+}
+
 [data-theme='business'] {
     --glass-bg: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.12);
+    --glass-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
     --sidebar-bg: #0a0a0c;
     --accent-glow: rgba(124, 58, 237, 0.2);
     --main-bg: #0f1014;
@@ -88,13 +99,14 @@ body {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
 }
 
 .sidebar-glass {
-    background: var(--glass-bg);
+    background: var(--sidebar-glass-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-right: 1px solid var(--glass-border);
+    border-right: 1px solid var(--sidebar-glass-border);
 }
 
 .glass-item {
@@ -118,7 +130,12 @@ body {
 }
 
 .premium-sidebar {
-    background: var(--sidebar-bg);
+    background: var(--sidebar-main-bg);
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.premium-sidebar .text-white {
+    color: #fff !important;
 }
 
 .logo-glow {
@@ -126,12 +143,12 @@ body {
 }
 
 /* Global Table Refresh */
-table {
+[data-theme='business'] table {
     border-collapse: separate;
     border-spacing: 0 4px;
 }
 
-thead th {
+[data-theme='business'] thead th {
     background: transparent !important;
     color: rgba(255, 255, 255, 0.4) !important;
     border: none !important;
@@ -141,30 +158,30 @@ thead th {
     font-size: 11px !important;
 }
 
-tbody tr {
+[data-theme='business'] tbody tr {
     background: rgba(255, 255, 255, 0.02);
     transition: all 0.2s;
 }
 
-tbody tr:hover {
+[data-theme='business'] tbody tr:hover {
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-1px);
 }
 
-td {
+[data-theme='business'] td {
     border: none !important;
     color: rgba(255, 255, 255, 0.8) !important;
 }
 
-.custom-scrollbar::-webkit-scrollbar {
+[data-theme='business'] .custom-scrollbar::-webkit-scrollbar {
     width: 5px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
+[data-theme='business'] .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
+[data-theme='business'] .custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
 }

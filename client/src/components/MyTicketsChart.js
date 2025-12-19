@@ -23,29 +23,43 @@ ChartJS.register(
 
 function MyTicketsChart({ tickets }) {
   const [chartData, setChartData] = useState(null);
+  const [theme, setTheme] = useState(document.documentElement.getAttribute('data-theme') || 'light');
+
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'data-theme') {
+          const newTheme = document.documentElement.getAttribute('data-theme');
+          setTheme(newTheme);
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, { attributes: true });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const generateChartData = () => {
       const ticketCounts = {};
 
-      // Count tickets created per day
       tickets.forEach((ticket) => {
-        const createdAt = format(ticket.createdAt, "yyyy-MM-dd");
-        //const createdAt = moment(ticket.createdAt).format("YYYY-MM-DD");
+        const createdAt = format(new Date(ticket.createdAt), "yyyy-MM-dd");
         ticketCounts[createdAt] = (ticketCounts[createdAt] || 0) + 1;
       });
 
-      // Prepare data for the chart
-      const labels = Object.keys(ticketCounts);
+      const labels = Object.keys(ticketCounts).sort();
       const data = {
         labels,
         datasets: [
           {
             label: "Tickets Created",
-            data: Object.values(ticketCounts),
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-            borderColor: "rgb(53, 162, 235)",
-            borderWidth: 1,
+            data: labels.map(label => ticketCounts[label]),
+            backgroundColor: "rgba(124, 58, 237, 0.6)",
+            borderColor: "rgba(124, 58, 237, 1)",
+            borderWidth: 2,
+            borderRadius: 8,
+            hoverBackgroundColor: "rgba(124, 58, 237, 0.8)",
           },
         ],
       };
@@ -58,38 +72,50 @@ function MyTicketsChart({ tickets }) {
     }
   }, [tickets]);
 
+  const isDark = theme === 'business';
+  const textColor = isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)';
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       y: {
-        ticks: { color: 'rgba(255, 255, 255, 0.5)' },
-        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+        ticks: { color: textColor, font: { family: 'Outfit', size: 10 } },
+        grid: { color: gridColor, drawBorder: false }
       },
       x: {
-        ticks: { color: 'rgba(255, 255, 255, 0.5)' },
+        ticks: { color: textColor, font: { family: 'Outfit', size: 10 } },
         grid: { display: false }
       }
     },
     plugins: {
       legend: {
-        position: "top",
-        labels: { color: '#fff' }
+        display: false
       },
-      title: {
-        display: true,
-        text: "Tickets Activity",
-        color: '#fff'
-      },
+      tooltip: {
+        backgroundColor: isDark ? '#1a1c23' : '#fff',
+        titleColor: isDark ? '#fff' : '#000',
+        bodyColor: isDark ? '#fff' : '#000',
+        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 12,
+        displayColors: false
+      }
     },
   };
+
   return (
-    <TitleCard title=" Tickets" padding={"px-2 py-2 md:px-6 md:py-6"}>
+    <div className="w-full h-full min-h-[300px]">
       {chartData ? (
         <Bar data={chartData} options={options} />
       ) : (
-        <p>Loading chart data...</p>
+        <div className="flex items-center justify-center h-full">
+          <span className="loading loading-spinner loading-md opacity-20"></span>
+        </div>
       )}
-    </TitleCard>
+    </div>
   );
 }
 

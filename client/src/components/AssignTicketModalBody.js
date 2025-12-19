@@ -68,9 +68,9 @@ const AssignTicketModalBody = ({ closeModal, extraObject }) => {
         value={selectedAgent}
         onChange={(e) => setSelectedAgent(e.target.value)}
       >
-        <option value="">Select a support agent</option>
+        <option value="" className="bg-base-100 text-base-content">Select a support agent</option>
         {supportAgents.map((agent) => (
-          <option key={agent._id} value={agent._id}>
+          <option key={agent._id} value={agent._id} className="bg-base-100 text-base-content">
             {agent.name}
           </option>
         ))}

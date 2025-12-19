@@ -66,9 +66,9 @@ const AutoAssignTicketModalBody = ({ closeModal, extraObject }) => {
           value={selectedDepartment}
           onChange={(e) => setSelectedDepartment(e.target.value)}
         >
-          <option value="">Select a department</option>
+          <option value="" className="bg-base-100 text-base-content">Select a department</option>
           {departments.map((department) => (
-            <option key={department._id} value={department._id}>
+            <option key={department._id} value={department._id} className="bg-base-100 text-base-content">
               {department.name}
             </option>
           ))}
