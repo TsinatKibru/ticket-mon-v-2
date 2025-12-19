@@ -9,6 +9,13 @@ import {
     loadBalancing,
     roundRobin,
 } from "../utils/assignmentAlgorithms.js";
+import {
+    sendTicketCreatedEmail,
+    sendTicketAssignedEmail,
+    sendTicketStatusUpdatedEmail,
+    sendNewCommentEmail,
+} from "./email.service.js";
+import { evaluateAutomationRules } from "./automation.service.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,6 +48,13 @@ export const createTicketService = async (data, userId, file, baseUrl) => {
 
     await newTicket.save();
     await newTicket.populate("created_by", "name email");
+
+    // Send notification
+    sendTicketCreatedEmail(newTicket, newTicket.created_by).catch(err => console.error("Email notification failed:", err));
+
+    // Evaluate automation
+    evaluateAutomationRules(newTicket, "OnCreate").catch(err => console.error("Automation failed:", err));
+
     return newTicket;
 };
 
@@ -160,6 +174,12 @@ export const updateTicketStatusService = async (id, status, userId, role) => {
         throw error;
     }
 
+    await ticket.populate("created_by", "name email");
+    sendTicketStatusUpdatedEmail(ticket, ticket.created_by, status).catch(err => console.error("Email notification failed:", err));
+
+    // Evaluate automation
+    evaluateAutomationRules(ticket, "OnStatusChange").catch(err => console.error("Automation failed:", err));
+
     return ticket;
 };
 
@@ -181,6 +201,9 @@ export const assignTicketService = async (id, assigned_to, userId, role) => {
         error.statusCode = 404;
         throw error;
     }
+
+    await ticket.populate("assigned_to", "name email");
+    sendTicketAssignedEmail(ticket, ticket.assigned_to).catch(err => console.error("Email notification failed:", err));
 
     return ticket;
 };
@@ -224,6 +247,18 @@ export const addCommentService = async (id, text, parentCommentId, userId) => {
         path: "comments.replies.created_by",
         select: "name email",
     });
+
+    // Send notification to the other party
+    const creatorId = ticket.created_by._id.toString();
+    const assigneeId = ticket.assigned_to ? ticket.assigned_to._id.toString() : null;
+
+    if (userId.toString() === creatorId && assigneeId) {
+        // Notify assignee
+        sendNewCommentEmail(ticket, ticket.assigned_to, text).catch(err => console.error("Email notification failed:", err));
+    } else if (assigneeId && userId.toString() === assigneeId) {
+        // Notify creator
+        sendNewCommentEmail(ticket, ticket.created_by, text).catch(err => console.error("Email notification failed:", err));
+    }
 
     return ticket;
 };

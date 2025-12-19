@@ -23,4 +23,14 @@ if (!process.env.DB_URI) {
 
 // Use Railway's dynamic PORT if available
 export const PORT = process.env.PORT || 5500;
-export const { NODE_ENV, DB_URI, JWT_SECRET, JWT_EXPIRES_IN } = process.env;
+export const {
+  NODE_ENV,
+  DB_URI,
+  JWT_SECRET,
+  JWT_EXPIRES_IN,
+  SMTP_HOST,
+  SMTP_PORT,
+  SMTP_USER,
+  SMTP_PASS,
+  EMAIL_FROM,
+} = process.env;

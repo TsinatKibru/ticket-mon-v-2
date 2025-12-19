@@ -137,27 +137,29 @@ function LeftSidebar() {
         </li>
 
         {/* Sidebar Menu Items */}
-        {routes.map((route, k) => (
-          <li key={k} className="mb-1">
-            {route.submenu ? (
-              <SidebarSubmenu {...route} />
-            ) : (
-              <NavLink
-                end
-                to={`/app${route.path}`}
-                className={({ isActive }) =>
-                  `${isActive
-                    ? "bg-primary text-white shadow-lg"
-                    : "hover:bg-neutral-focus"
-                  } font-medium py-3 px-4 rounded-lg my-1 mx-2 transition-all duration-200`
-                }
-                onClick={closeSidebar}
-              >
-                {route.icon} <span className="text-base ml-2">{route.name}</span>
-              </NavLink>
-            )}
-          </li>
-        ))}
+        {routes
+          .filter(route => !route.allowedRoles || route.allowedRoles.includes(user?.role))
+          .map((route, k) => (
+            <li key={k} className="mb-1">
+              {route.submenu ? (
+                <SidebarSubmenu {...route} />
+              ) : (
+                <NavLink
+                  end
+                  to={`/app${route.path}`}
+                  className={({ isActive }) =>
+                    `${isActive
+                      ? "bg-primary text-white shadow-lg"
+                      : "hover:bg-neutral-focus"
+                    } font-medium py-3 px-4 rounded-lg my-1 mx-2 transition-all duration-200`
+                  }
+                  onClick={closeSidebar}
+                >
+                  {route.icon} <span className="text-base ml-2">{route.name}</span>
+                </NavLink>
+              )}
+            </li>
+          ))}
 
         <li className="mt-auto border-t border-neutral-focus/30 pt-6 px-4 pb-6">
           <div className="flex items-center gap-3">

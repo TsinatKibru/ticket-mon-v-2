@@ -6,6 +6,9 @@ import userRouter from "./routes/user.routes.js";
 import departmentRouter from "./routes/department.routes.js";
 import authRouter from "./routes/auth.routes.js";
 import ticketRouter from "./routes/ticket.routes.js";
+import analyticsRouter from "./routes/analytics.routes.js";
+import templateRouter from "./routes/template.routes.js";
+import automationRouter from "./routes/automation.routes.js";
 import connectToDatabase from "./database/mongodb.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import apiLimiter from "./middlewares/ratelimiter.middleware.js";
@@ -50,6 +53,9 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/tickets", ticketRouter);
 app.use("/api/v1/departments", departmentRouter);
+app.use("/api/v1/analytics", analyticsRouter);
+app.use("/api/v1/templates", templateRouter);
+app.use("/api/v1/automations", automationRouter);
 
 app.use(errorMiddleware);
 

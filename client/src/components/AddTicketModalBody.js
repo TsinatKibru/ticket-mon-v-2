@@ -140,7 +140,7 @@ const INITIAL_TICKET_OBJ = {
   title: "",
   description: "",
   priority: "Medium", // Default priority
-  category: "Technical", // Default category
+  category: "Technical Support", // Default category
 };
 
 function AddTicketModalBody({ closeModal }) {
@@ -150,6 +150,40 @@ function AddTicketModalBody({ closeModal }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [ticketObj, setTicketObj] = useState(INITIAL_TICKET_OBJ);
   const [attachment, setAttachment] = useState(null); // State for the attachment file
+  const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState("");
+
+  React.useEffect(() => {
+    fetchTemplates();
+  }, []);
+
+  const fetchTemplates = async () => {
+    try {
+      const { getTemplates } = await import("../utils/templateApi");
+      const data = await getTemplates();
+      setTemplates(data);
+    } catch (error) {
+      console.error("Failed to fetch templates:", error);
+    }
+  };
+
+  const handleTemplateChange = (e) => {
+    const templateId = e.target.value;
+    setSelectedTemplate(templateId);
+    if (templateId) {
+      const template = templates.find((t) => t._id === templateId);
+      if (template) {
+        setTicketObj({
+          title: template.title,
+          description: template.description,
+          priority: template.priority,
+          category: template.category,
+        });
+      }
+    } else {
+      setTicketObj(INITIAL_TICKET_OBJ);
+    }
+  };
 
   const saveNewTicket = async () => {
     if (ticketObj.title.trim() === "")
@@ -206,6 +240,24 @@ function AddTicketModalBody({ closeModal }) {
 
   return (
     <>
+      <div className="form-control w-full">
+        <label className="label">
+          <span className="label-text text-base-content">Use Template (Optional)</span>
+        </label>
+        <select
+          className="select select-bordered w-full select-sm"
+          value={selectedTemplate}
+          onChange={handleTemplateChange}
+        >
+          <option value="">-- No Template --</option>
+          {templates.map((t) => (
+            <option key={t._id} value={t._id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <InputText
         type="text"
         defaultValue={ticketObj.title}

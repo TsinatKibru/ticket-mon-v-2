@@ -11,8 +11,8 @@ export const validate = (req, res, next) => {
 export const ticketValidation = [
     body('title').notEmpty().withMessage('Title is required'),
     body('description').notEmpty().withMessage('Description is required'),
-    body('priority').optional().isIn(['low', 'medium', 'high']).withMessage('Invalid priority'),
-    body('category').optional().isIn(['IT', 'HR', 'Sales', 'General']).withMessage('Invalid category'),
+    body('priority').optional().isIn(['Low', 'Medium', 'High', 'Urgent']).withMessage('Invalid priority'),
+    body('category').optional().isIn(['Technical', 'Billing', 'General', 'Technical Support', 'Hardware Request', 'Access Request', 'Others']).withMessage('Invalid category'),
 ];
 
 export const registerValidation = [

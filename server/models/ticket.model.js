@@ -31,12 +31,12 @@ const ticketSchema = new mongoose.Schema(
     },
     priority: {
       type: String,
-      enum: ["Low", "Medium", "High"],
+      enum: ["Low", "Medium", "High", "Urgent"],
       default: "Medium",
     },
     category: {
       type: String,
-      enum: ["Technical", "Billing", "General"],
+      enum: ["Technical", "Billing", "General", "Technical Support", "Hardware Request", "Access Request", "Others"],
       default: "General",
     },
     created_by: {
