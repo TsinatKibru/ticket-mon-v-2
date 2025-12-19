@@ -14,11 +14,11 @@ import {
   updateTicketStatusService,
   assignTicketService,
   addCommentService,
-  deleteTicketService,
-  addAttachmentService,
   deleteAttachmentService,
   autoAssignTicketService
 } from "../services/ticket.service.js";
+import { io } from "../app.js";
+import { generateNotificationMessage } from "../utils/notifications.util.js";
 
 export const createTicket = async (req, res, next) => {
   try {
