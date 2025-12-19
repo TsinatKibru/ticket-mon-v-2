@@ -329,59 +329,72 @@ function TicketsList() {
         )}
 
         {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="table w-full">
+        <div className="overflow-x-auto w-full">
+          <table className="table w-full custom-table">
             <thead>
-              <tr className="bg-base-200">
-                <th className="cursor-pointer" onClick={() => handleSort('title')}>Title {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? <BarsArrowUpIcon className="inline w-3 h-3" /> : <BarsArrowDownIcon className="inline w-3 h-3" />)}</th>
-                <th className="cursor-pointer" onClick={() => handleSort('status')}>Status</th>
-                <th>Priority</th>
-                <th>Created By</th>
-                <th className="cursor-pointer" onClick={() => handleSort('createdAt')}>Created At</th>
-                <th>Assigned To</th>
-                <th className="text-right">Actions</th>
+              <tr className="text-neutral-content/40 uppercase text-[10px] font-bold tracking-[0.15em] border-b border-white/5 bg-white/[0.01]">
+                <th className="py-4 px-6 font-outfit cursor-pointer hover:text-primary transition-colors" onClick={() => handleSort('title')}>
+                  Ticket Title {sortConfig.key === 'title' && (sortConfig.direction === 'asc' ? <ChevronUpIcon className="inline w-3 h-3 ml-1" /> : <ChevronDownIcon className="inline w-3 h-3 ml-1" />)}
+                </th>
+                <th className="font-outfit">Status</th>
+                <th className="font-outfit">Priority</th>
+                <th className="font-outfit">Reporter</th>
+                <th className="font-outfit cursor-pointer hover:text-primary transition-colors" onClick={() => handleSort('createdAt')}>
+                  Generated {sortConfig.key === 'createdAt' && (sortConfig.direction === 'asc' ? <ChevronUpIcon className="inline w-3 h-3 ml-1" /> : <ChevronDownIcon className="inline w-3 h-3 ml-1" />)}
+                </th>
+                <th className="font-outfit">Owner</th>
+                <th className="text-right px-6 font-outfit">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-white/5">
               {paginatedTickets.map(ticket => (
                 <React.Fragment key={ticket._id}>
-                  <tr className="hover:bg-base-200/50 transition-colors">
-                    <td className="font-medium">{ticket.title}</td>
+                  <tr className="hover:bg-white/[0.02] transition-all duration-200 group border-none">
+                    <td className="py-3 px-6 font-bold text-sm text-white/90 group-hover:text-white transition-colors">
+                      {ticket.title}
+                    </td>
                     <td>
-                      <div className={`badge badge-sm font-semibold ${ticket.status === 'Open' ? 'badge-error badge-outline' :
-                        ticket.status === 'In Progress' ? 'badge-warning badge-outline' :
-                          'badge-success badge-outline'
+                      <div className={`badge badge-sm rounded-md px-2.5 py-2 font-bold text-[10px] tracking-wider uppercase border transition-all ${ticket.status === 'Open' ? 'bg-rose-500/10 border-rose-500/20 text-rose-500' :
+                        ticket.status === 'In Progress' ? 'bg-amber-500/10 border-amber-500/20 text-amber-500' :
+                          'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
                         }`}>
                         {ticket.status}
                       </div>
                     </td>
                     <td>
-                      <div className={`badge badge-sm ${ticket.priority === 'High' ? 'badge-error' :
-                        ticket.priority === 'Medium' ? 'badge-warning' :
-                          'badge-info'
-                        } text-base-100 font-bold`}>
+                      <div className={`badge badge-sm rounded-md px-2.5 py-2 font-bold text-[10px] tracking-wider uppercase border ${ticket.priority === 'High' ? 'bg-rose-500/20 border-rose-500/40 text-rose-500' :
+                        ticket.priority === 'Medium' ? 'bg-amber-500/20 border-amber-500/40 text-amber-500' :
+                          'bg-sky-500/20 border-sky-500/40 text-sky-400'
+                        }`}>
                         {ticket.priority}
                       </div>
                     </td>
                     <td>
-                      <div className="flex items-center gap-2">
-                        <div className="avatar placeholder">
-                          <div className="bg-neutral-focus text-neutral-content rounded-full w-6">
-                            <span className="text-xs">{ticket.created_by?.name?.charAt(0)}</span>
+                      <div className="flex items-center gap-2.5">
+                        <div className="avatar placeholder relative">
+                          <div className="bg-primary/10 text-primary rounded-lg w-8 h-8 ring-1 ring-primary/20">
+                            <span className="text-xs font-bold leading-none">{ticket.created_by?.name?.charAt(0)}</span>
                           </div>
                         </div>
-                        <span className="text-sm">{ticket.created_by?.name}</span>
+                        <span className="text-xs text-base-content/70 font-medium">{ticket.created_by?.name}</span>
                       </div>
                     </td>
-                    <td className="text-sm text-base-content/70">
-                      {format(parseISO(ticket.createdAt), "dd MMM yyyy")}
+                    <td className="text-[11px] text-base-content/40 font-semibold tracking-tight">
+                      {format(parseISO(ticket.createdAt), "dd MMM, yy")}
                     </td>
-                    <td className="text-sm">
-                      {ticket.assigned_to ? ticket.assigned_to.name : <span className="opacity-50 italic">Unassigned</span>}
+                    <td className="text-[11px] font-medium">
+                      {ticket.assigned_to ? (
+                        <div className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
+                          <span className="text-base-content/70">{ticket.assigned_to.name}</span>
+                        </div>
+                      ) : (
+                        <span className="mx-auto block w-fit px-2 py-0.5 rounded bg-white/5 text-base-content/30 italic">Unassigned</span>
+                      )}
                     </td>
-                    <td className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <button className="btn btn-ghost btn-xs tooltip" data-tip="Comments" onClick={() => toggleComments(ticket._id)}>
+                    <td className="text-right px-6">
+                      <div className="flex justify-end items-center gap-1.5">
+                        <button className="p-1.5 text-base-content/30 hover:text-primary hover:bg-primary/10 rounded-lg transition-all tooltip" data-tip="Discussion" onClick={() => toggleComments(ticket._id)}>
                           <ChatBubbleLeftIcon className="w-4 h-4" />
                         </button>
                         <TicketActions
@@ -393,7 +406,7 @@ function TicketsList() {
                           openConfirmTicketDelete={openConfirmTicketDelete}
                           openAutoAssignTicketModal={openAutoAssignTicketModal}
                         />
-                        <button className="btn btn-ghost btn-xs" onClick={() => toggleComments(ticket._id)}>
+                        <button className="p-1.5 text-base-content/30 hover:text-white hover:bg-white/5 rounded-lg transition-all" onClick={() => toggleComments(ticket._id)}>
                           {expandedTickets[ticket._id] ? <ChevronUpIcon className="w-4 h-4" /> : <ChevronDownIcon className="w-4 h-4" />}
                         </button>
                       </div>

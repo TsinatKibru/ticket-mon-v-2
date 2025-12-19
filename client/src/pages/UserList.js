@@ -105,73 +105,79 @@ class UserList extends Component {
           <div className="overflow-x-auto w-full">
             <table className="table w-full custom-table">
               <thead>
-                <tr className="text-neutral-content/40 uppercase text-[11px] font-bold tracking-widest border-b border-white/5 bg-white/[0.02]">
-                  <th className="py-5 px-8">Member</th>
-                  <th>Joined Date</th>
-                  <th>Role</th>
-                  <th className="text-right px-8">Actions</th>
+                <tr className="text-neutral-content/40 uppercase text-[10px] font-bold tracking-[0.15em] border-b border-white/5 bg-white/[0.01]">
+                  <th className="py-4 px-8 font-outfit">Member</th>
+                  <th className="font-outfit">Joined</th>
+                  <th className="font-outfit">Access Role</th>
+                  <th className="text-right px-8 font-outfit">Actions</th>
                 </tr>
               </thead>
-              <tbody className="">
+              <tbody className="divide-y divide-white/5">
                 {userstatus === "idle"
                   ? Array.from({ length: 5 }).map((_, i) => (
-                    <tr key={i} className="animate-pulse border-b border-white/5">
-                      <td className="py-6 px-8 flex items-center gap-4">
-                        <div className="skeleton h-12 w-12 rounded-xl"></div>
-                        <div className="space-y-2">
-                          <div className="skeleton h-4 w-32"></div>
-                          <div className="skeleton h-3 w-40 opacity-50"></div>
+                    <tr key={i} className="animate-pulse">
+                      <td className="py-3 px-8 flex items-center gap-3">
+                        <div className="skeleton h-10 w-10 rounded-xl"></div>
+                        <div className="space-y-1.5">
+                          <div className="skeleton h-3 w-28"></div>
+                          <div className="skeleton h-2 w-36 opacity-50"></div>
                         </div>
                       </td>
-                      <td><div className="skeleton h-4 w-24"></div></td>
-                      <td><div className="skeleton h-8 w-32 rounded-lg"></div></td>
-                      <td className="text-right px-8"><div className="skeleton h-10 w-10 rounded-xl ml-auto"></div></td>
+                      <td><div className="skeleton h-3 w-20"></div></td>
+                      <td><div className="skeleton h-6 w-24 rounded-lg"></div></td>
+                      <td className="text-right px-8"><div className="skeleton h-8 w-8 rounded-xl ml-auto"></div></td>
                     </tr>
                   ))
                   : users != null &&
                   users.map((user, k) => (
-                    <tr key={k} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
-                      <td className="py-6 px-8">
-                        <div className="flex items-center gap-4">
+                    <tr key={k} className="hover:bg-white/[0.02] transition-all duration-200 group">
+                      <td className="py-3 px-8">
+                        <div className="flex items-center gap-3">
                           <div className="relative">
                             <img
                               src={fixImageUrl(user.profileImage) || "/intro.png"}
-                              className="w-12 h-12 rounded-xl object-cover ring-2 ring-white/5 group-hover:ring-primary/40 transition-all"
+                              className="w-10 h-10 rounded-xl object-cover ring-1 ring-white/10 group-hover:ring-primary/40 transition-all shadow-md"
                               alt="avatar"
                             />
-                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-[#1a1c23] rounded-full"></div>
+                            <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 border-2 border-[#1a1c23] rounded-full"></div>
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-base truncate">{user.name}</p>
-                            <p className="text-xs text-base-content/50 truncate tracking-wide">{user.email}</p>
+                            <p className="font-bold text-sm text-white/90 truncate group-hover:text-white transition-colors capitalize">{user.name}</p>
+                            <p className="text-[11px] text-base-content/40 truncate tracking-tight">{user.email}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="text-base-content/60 font-medium">
-                        {format(new Date(user.createdAt), "MMM dd, yyyy")}
+                      <td className="text-xs text-base-content/50 font-medium">
+                        {format(new Date(user.createdAt), "MMM dd, yy")}
                       </td>
                       <td>
-                        <select
-                          disabled={user._id === currentUser._id}
-                          className={`select select-sm rounded-lg glass-effect border-white/10 font-semibold text-xs tracking-wide min-w-[140px] appearance-none focus:ring-1 focus:ring-primary/40 ${user.role === 'admin' ? 'text-primary' : 'text-base-content'
-                            }`}
-                          value={user.role}
-                          onChange={(e) =>
-                            this.handleRoleChange(user._id, e.target.value)
-                          }
-                        >
-                          <option value="user">USER</option>
-                          <option value="admin">ADMIN</option>
-                          <option value="support_agent">SUPPORT AGENT</option>
-                        </select>
+                        <div className="flex gap-1.5">
+                          {['user', 'support_agent', 'admin'].map((role) => (
+                            <button
+                              key={role}
+                              disabled={user._id === currentUser._id || userstatus === 'updating'}
+                              onClick={() => this.handleRoleChange(user._id, role)}
+                              className={`px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase border transition-all duration-300 ${user.role === role
+                                ? role === 'admin'
+                                  ? 'bg-primary/20 border-primary/40 text-primary shadow-lg shadow-primary/10'
+                                  : role === 'support_agent'
+                                    ? 'bg-blue-500/20 border-blue-500/40 text-blue-400'
+                                    : 'bg-white/10 border-white/20 text-white'
+                                : 'bg-transparent border-transparent text-base-content/30 hover:text-base-content/60 hover:bg-white/5 opacity-40 hover:opacity-100'
+                                }`}
+                            >
+                              {role.replace('_', ' ')}
+                            </button>
+                          ))}
+                        </div>
                       </td>
                       <td className="text-right px-8">
                         <button
                           disabled={user._id === currentUser._id}
-                          className="btn btn-square btn-ghost btn-sm text-base-content/40 hover:text-rose-500 hover:bg-rose-500/10 rounded-xl transition-all"
+                          className="p-2 text-base-content/30 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                           onClick={() => this.openConfirmUserDelete(k)}
                         >
-                          <TrashIcon className="w-5 h-5" />
+                          <TrashIcon className="w-4 h-4" />
                         </button>
                       </td>
                     </tr>
