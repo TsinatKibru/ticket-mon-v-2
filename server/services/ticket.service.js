@@ -145,6 +145,11 @@ export const updateTicketService = async (id, userId, data) => {
         select: "name email",
     });
 
+    if (priority) {
+        // Evaluate automation for priority change
+        evaluateAutomationRules(ticket, "OnPriorityChange").catch(err => console.error("Automation failed:", err));
+    }
+
     return ticket;
 };
 

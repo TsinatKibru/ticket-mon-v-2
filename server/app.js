@@ -9,6 +9,7 @@ import ticketRouter from "./routes/ticket.routes.js";
 import analyticsRouter from "./routes/analytics.routes.js";
 import templateRouter from "./routes/template.routes.js";
 import automationRouter from "./routes/automation.routes.js";
+import categoryRouter from "./routes/category.routes.js";
 import notificationRouter from "./routes/notification.routes.js";
 import connectToDatabase from "./database/mongodb.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
@@ -57,6 +58,7 @@ app.use("/api/v1/departments", departmentRouter);
 app.use("/api/v1/analytics", analyticsRouter);
 app.use("/api/v1/templates", templateRouter);
 app.use("/api/v1/automations", automationRouter);
+app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/notifications", notificationRouter);
 
 app.use(errorMiddleware);
@@ -90,10 +92,39 @@ io.on("connection", (socket) => {
   }
 });
 
+import Category from "./models/category.model.js";
+
+const seedCategories = async () => {
+  const categories = [
+    "Technical",
+    "Billing",
+    "General",
+    "Technical Support",
+    "Hardware Request",
+    "Access Request",
+    "HR Support",
+    "Sales Request",
+    "Marketing",
+    "Others"
+  ];
+  try {
+    for (const name of categories) {
+      const exists = await Category.findOne({ name });
+      if (!exists) {
+        await Category.create({ name });
+        console.log(`Created category: ${name}`);
+      }
+    }
+  } catch (error) {
+    console.error("Seeding failed:", error);
+  }
+};
+
 // Start the server
 server.listen(PORT, async () => {
   console.log("Ticket Monitoring API running on", PORT);
   await connectToDatabase();
+  await seedCategories();
 });
 
 // Export Socket.IO instance for use in controllers

@@ -4,6 +4,7 @@ import { setPageTitle } from "../redux/slices/headerSlice";
 import TitleCard from "../components/TitleCard";
 import { PlusIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getTemplates, deleteTemplate, createTemplate, updateTemplate } from "../utils/templateApi";
+import { getCategories } from "../utils/categoryApi";
 import { toast } from "sonner";
 
 function Templates() {
@@ -12,30 +13,45 @@ function Templates() {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTemplate, setEditingTemplate] = useState(null);
+    const [categories, setCategories] = useState([]);
     const [formData, setFormData] = useState({
         name: "",
         title: "",
         description: "",
-        category: "Technical Support",
+        category: "",
         priority: "Medium",
         isActive: true,
     });
 
     useEffect(() => {
         dispatch(setPageTitle({ title: "Ticket Templates" }));
-        fetchTemplates();
+        fetchData();
     }, [dispatch]);
 
-    const fetchTemplates = async () => {
+    const fetchData = async () => {
         try {
             setLoading(true);
-            const data = await getTemplates(true);
-            setTemplates(data);
+            const [templatesData, categoriesData] = await Promise.all([
+                getTemplates(true),
+                getCategories(true)
+            ]);
+            setTemplates(templatesData);
+            setCategories(categoriesData);
+            // Set default category if available
+            if (categoriesData.length > 0) {
+                setFormData(prev => ({ ...prev, category: categoriesData[0].name }));
+            }
         } catch (error) {
-            toast.error("Failed to fetch templates");
+            toast.error("Failed to fetch data");
         } finally {
             setLoading(false);
         }
+    };
+
+    const fetchTemplates = async () => {
+        // kept for compatibility if called singly, or unused
+        const data = await getTemplates(true);
+        setTemplates(data);
     };
 
     const handleOpenModal = (template = null) => {
@@ -177,12 +193,10 @@ function Templates() {
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                                     >
-                                        <option>Technical Support</option>
-                                        <option>Hardware Request</option>
-                                        <option>Network Issue</option>
-                                        <option>Access Request</option>
-                                        <option>Billing</option>
-                                        <option>Others</option>
+                                        <option value="" disabled>Select Category</option>
+                                        {categories.map((cat) => (
+                                            <option key={cat._id} value={cat.name}>{cat.name}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="form-control">

@@ -10,6 +10,7 @@ import {
   updateTicket,
 } from "../redux/slices/ticketSlice";
 import { addCommentApi } from "../utils/api";
+import { getCategories } from "../utils/categoryApi";
 import { toast } from "sonner";
 import {
   CONFIRMATION_MODAL_CLOSE_TYPES,
@@ -45,6 +46,7 @@ function TicketsList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [showFilters, setShowFilters] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   const [filters, setFilters] = useState({
     status: "",
@@ -62,8 +64,18 @@ function TicketsList() {
 
   useEffect(() => {
     dispatch(setPageTitle({ title: "Tickets List" }));
+    fetchCategories();
     // eslint-disable-next-line
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const data = await getCategories(true);
+      setCategories(data);
+    } catch (error) {
+      console.error("Failed to fetch categories");
+    }
+  };
 
   // Modal Actions
   const openAddNewTicketModal = () => {
@@ -211,6 +223,7 @@ function TicketsList() {
     return tickets.filter(ticket => {
       const matchesStatus = filters.status ? ticket.status === filters.status : true;
       const matchesPriority = filters.priority ? ticket.priority === filters.priority : true;
+      const matchesCategory = filters.category ? ticket.category === filters.category : true;
       const matchesAssignedTo = filters.assignedTo ? ticket.assigned_to?._id === filters.assignedTo : true;
       const matchesSearch = searchQuery ?
         (ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -225,7 +238,7 @@ function TicketsList() {
         });
       }
 
-      return matchesStatus && matchesPriority && matchesAssignedTo && matchesSearch && matchesDate;
+      return matchesStatus && matchesPriority && matchesCategory && matchesAssignedTo && matchesSearch && matchesDate;
     }).sort((a, b) => {
       if (!sortConfig.key) return 0;
       const aVal = a[sortConfig.key];
@@ -292,7 +305,7 @@ function TicketsList() {
 
         {/* Filters Drawer */}
         {showFilters && (
-          <div className="p-6 bg-base-content/[0.02] border-b border-base-content/5 grid grid-cols-1 md:grid-cols-4 gap-6 animate-in slide-in-from-top duration-300">
+          <div className="p-6 bg-base-content/[0.02] border-b border-base-content/5 grid grid-cols-1 md:grid-cols-5 gap-6 animate-in slide-in-from-top duration-300">
             <div className="form-control w-full">
               <label className="label py-1"><span className="label-text text-[10px] font-bold uppercase tracking-widest text-base-content/30">Status</span></label>
               <select className="select select-bordered select-sm bg-base-200 border-base-content/10 h-10 rounded-xl" value={filters.status} onChange={(e) => handleFilterChange('status', e.target.value)}>
@@ -309,6 +322,15 @@ function TicketsList() {
                 <option value="High">High</option>
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
+              </select>
+            </div>
+            <div className="form-control w-full">
+              <label className="label py-1"><span className="label-text text-[10px] font-bold uppercase tracking-widest text-base-content/30">Category</span></label>
+              <select className="select select-bordered select-sm bg-base-200 border-base-content/10 h-10 rounded-xl" value={filters.category} onChange={(e) => handleFilterChange('category', e.target.value)}>
+                <option value="">All Categories</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat.name}>{cat.name}</option>
+                ))}
               </select>
             </div>
             <div className="form-control w-full">
