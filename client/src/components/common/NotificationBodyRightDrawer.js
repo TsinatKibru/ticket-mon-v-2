@@ -7,9 +7,8 @@ function NotificationBodyRightDrawer({ notifications }) {
         notifications.map((notification, i) => (
           <div
             key={i}
-            className={`mt-3 card bg-base-200 rounded-box p-3 ${
-              i % 2 === 0 && "bg-blue-100 text-black "
-            } `}
+            className={`mt-3 card bg-base-200 rounded-box p-3 ${i % 2 === 0 && "bg-blue-100 text-base-content/70 "
+              } `}
             dangerouslySetInnerHTML={{ __html: notification.message }}
           />
         ))
