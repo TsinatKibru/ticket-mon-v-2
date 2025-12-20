@@ -66,7 +66,7 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen minimal-bg flex items-center justify-center p-6 lg:p-12">
+    <div className="min-h-screen minimal-bg flex items-center justify-center p-6 lg:p-12" data-theme="business">
       <div className="w-full max-w-[1100px] minimal-card rounded-[40px] overflow-hidden flex flex-col md:flex-row shadow-2xl animate-in fade-in zoom-in-95 duration-1000">
 
         {/* Left Side: Minimal Branding */}
