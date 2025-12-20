@@ -36,7 +36,7 @@ const ticketSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["Technical", "Billing", "General", "Technical Support", "Hardware Request", "Access Request", "Others"],
+      required: [true, "Ticket category is required"],
       default: "General",
     },
     created_by: {

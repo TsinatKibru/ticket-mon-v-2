@@ -7,11 +7,15 @@ import { sendEmail } from "./email.service.js"; // Helper function if needed
  */
 export const evaluateAutomationRules = async (ticket, triggerType) => {
     try {
-        const rules = await Automation.find({ trigger: triggerType, isActive: true });
+        const rules = await Automation.find({ "trigger.type": triggerType, isActive: true });
 
         for (const rule of rules) {
+            console.log(`[Automation] Checking rule: ${rule.name}`);
             if (checkConditions(ticket, rule.trigger.conditions)) {
+                console.log(`[Automation] Match found! Executing actions for rule: ${rule.name}`);
                 await executeActions(ticket, rule.actions);
+            } else {
+                console.log(`[Automation] No match for rule: ${rule.name}`);
             }
         }
     } catch (error) {
@@ -27,13 +31,22 @@ const checkConditions = (ticket, conditions) => {
 
     const { category, priority, keywords } = conditions;
 
-    if (category && ticket.category !== category) return false;
-    if (priority && ticket.priority !== priority) return false;
+    if (category && ticket.category !== category) {
+        console.log(`[Automation] Category mismatch. Ticket: ${ticket.category}, Rule: ${category}`);
+        return false;
+    }
+    if (priority && ticket.priority !== priority) {
+        console.log(`[Automation] Priority mismatch. Ticket: ${ticket.priority}, Rule: ${priority}`);
+        return false;
+    }
 
     if (keywords && keywords.length > 0) {
         const content = `${ticket.title} ${ticket.description}`.toLowerCase();
         const hasKeyword = keywords.some((kw) => content.includes(kw.toLowerCase()));
-        if (!hasKeyword) return false;
+        if (!hasKeyword) {
+            console.log(`[Automation] Keyword mismatch. Content: ${content}, Keywords: ${keywords}`);
+            return false;
+        }
     }
 
     return true;
