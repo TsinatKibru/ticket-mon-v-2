@@ -70,7 +70,7 @@ function Login() {
       <div className="w-full max-w-[1100px] minimal-card rounded-[40px] overflow-hidden flex flex-col md:flex-row shadow-2xl animate-in fade-in zoom-in-95 duration-1000">
 
         {/* Left Side: Minimal Branding */}
-        <div className="w-full md:w-[45%] border-b md:border-b-0 md:border-r border-white/5 bg-white/[0.01]">
+        <div className="w-full md:w-[45%] border-b md:border-b-0 md:border-r border-base-content/5 bg-base-content/[0.01]">
           <LandingIntro />
         </div>
 
@@ -81,7 +81,7 @@ function Login() {
               <h2 className="text-4xl font-bold mono-gradient-text font-outfit tracking-tighter mb-3">
                 Sign In
               </h2>
-              <p className="text-white/40 font-medium text-sm">
+              <p className="text-base-content/40 font-medium text-sm">
                 Enter your credentials to access your dashboard.
               </p>
             </header>
@@ -105,7 +105,7 @@ function Login() {
                     updateFormValue={updateFormValue}
                   />
                   <div className="text-right">
-                    <span className="text-[11px] font-bold text-white/30 hover:text-white/60 transition-colors uppercase tracking-widest cursor-pointer">
+                    <span className="text-[11px] font-bold text-base-content/30 hover:text-base-content/60 transition-colors uppercase tracking-widest cursor-pointer">
                       Forgot Password?
                     </span>
                   </div>
@@ -120,7 +120,7 @@ function Login() {
 
               <button
                 type="submit"
-                className={`w-full h-14 bg-white text-black font-bold rounded-2xl hover:bg-white/90 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 ${loading ? "opacity-70 cursor-wait" : ""}`}
+                className={`w-full h-14 bg-base-content text-base-100 font-bold rounded-2xl hover:bg-base-content/90 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 ${loading ? "opacity-70 cursor-wait" : ""}`}
                 disabled={loading}
               >
                 {loading ? (
@@ -134,10 +134,10 @@ function Login() {
               </button>
 
               <div className="text-center">
-                <p className="text-white/30 text-sm font-medium">
+                <p className="text-base-content/30 text-sm font-medium">
                   New member?{" "}
                   <Link to="/register">
-                    <span className="text-white hover:underline transition-all">
+                    <span className="text-base-content hover:underline transition-all">
                       Create an account
                     </span>
                   </Link>
