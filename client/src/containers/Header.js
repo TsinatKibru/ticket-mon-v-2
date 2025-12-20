@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import socket from "../utils/socket";
 import { LogOutIcon, UserIcon } from "lucide-react";
 import { fixImageUrl } from "../utils/imageUtils";
+import { getUnreadNotifications } from "../redux/slices/notificationSlice";
 
 function Header() {
   const dispatch = useDispatch();
@@ -28,7 +29,8 @@ function Header() {
       const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       setCurrentTheme(isDark ? "dark" : "light");
     }
-  }, []);
+    dispatch(getUnreadNotifications());
+  }, [dispatch]);
 
   const openNotification = () => {
     dispatch(openRightDrawer({

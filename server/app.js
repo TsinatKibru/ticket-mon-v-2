@@ -9,6 +9,7 @@ import ticketRouter from "./routes/ticket.routes.js";
 import analyticsRouter from "./routes/analytics.routes.js";
 import templateRouter from "./routes/template.routes.js";
 import automationRouter from "./routes/automation.routes.js";
+import notificationRouter from "./routes/notification.routes.js";
 import connectToDatabase from "./database/mongodb.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 import apiLimiter from "./middlewares/ratelimiter.middleware.js";
@@ -56,6 +57,7 @@ app.use("/api/v1/departments", departmentRouter);
 app.use("/api/v1/analytics", analyticsRouter);
 app.use("/api/v1/templates", templateRouter);
 app.use("/api/v1/automations", automationRouter);
+app.use("/api/v1/notifications", notificationRouter);
 
 app.use(errorMiddleware);
 

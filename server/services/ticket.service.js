@@ -175,6 +175,7 @@ export const updateTicketStatusService = async (id, status, userId, role) => {
     }
 
     await ticket.populate("created_by", "name email");
+    await ticket.populate("assigned_to", "name email");
     sendTicketStatusUpdatedEmail(ticket, ticket.created_by, status).catch(err => console.error("Email notification failed:", err));
 
     // Evaluate automation
@@ -202,6 +203,8 @@ export const assignTicketService = async (id, assigned_to, userId, role) => {
         throw error;
     }
 
+    await ticket.populate("created_by", "name email");
+    await ticket.populate("created_by", "name email");
     await ticket.populate("assigned_to", "name email");
     sendTicketAssignedEmail(ticket, ticket.assigned_to).catch(err => console.error("Email notification failed:", err));
 

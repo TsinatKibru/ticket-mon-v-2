@@ -20,6 +20,7 @@ import {
 } from "../services/ticket.service.js";
 import { io } from "../app.js";
 import { generateNotificationMessage } from "../utils/notifications.util.js";
+import { createNotificationService } from "../services/notification.service.js";
 
 export const createTicket = async (req, res, next) => {
   try {
@@ -102,6 +103,15 @@ export const updateTicketStatus = async (req, res, next) => {
     });
 
     if (!ticket.created_by._id.equals(req.user._id)) {
+      // Save to persistence
+      await createNotificationService({
+        recipient: ticket.created_by._id,
+        sender: req.user._id,
+        ticket: ticket._id,
+        type: "status",
+        message: notificationMessage,
+      });
+
       io.to(ticket.created_by._id.toString()).emit("ticketStatusUpdated", {
         message: notificationMessage,
         ticket,
@@ -109,6 +119,15 @@ export const updateTicketStatus = async (req, res, next) => {
     }
 
     if (ticket.assigned_to && !ticket.assigned_to._id.equals(req.user._id)) {
+      // Save to persistence
+      await createNotificationService({
+        recipient: ticket.assigned_to._id,
+        sender: req.user._id,
+        ticket: ticket._id,
+        type: "status",
+        message: notificationMessage,
+      });
+
       io.to(ticket.assigned_to._id.toString()).emit("ticketStatusUpdated", {
         message: notificationMessage,
         ticket,
@@ -140,6 +159,15 @@ export const assignTicket = async (req, res, next) => {
       ticket: ticket,
     });
     if (ticket.assigned_to && !ticket.assigned_to._id.equals(req.user._id)) {
+      // Save to persistence
+      await createNotificationService({
+        recipient: ticket.assigned_to._id,
+        sender: req.user._id,
+        ticket: ticket._id,
+        type: "assign",
+        message: notificationMessageAssign,
+      });
+
       io.to(ticket.assigned_to._id.toString()).emit("ticketAssigned", {
         message: notificationMessageAssign,
         ticket,
@@ -239,6 +267,15 @@ export const addComment = async (req, res, next) => {
 
     // Notify the ticket creator and assigned user
     if (!ticket.created_by._id.equals(req.user._id)) {
+      // Save to persistence
+      await createNotificationService({
+        recipient: ticket.created_by._id,
+        sender: req.user._id,
+        ticket: ticket._id,
+        type: "comment",
+        message: notificationMessage,
+      });
+
       io.to(ticket.created_by._id.toString()).emit("newComment", {
         message: notificationMessage,
         ticket,
@@ -248,6 +285,15 @@ export const addComment = async (req, res, next) => {
     }
 
     if (ticket.assigned_to && !ticket.assigned_to._id.equals(req.user._id)) {
+      // Save to persistence
+      await createNotificationService({
+        recipient: ticket.assigned_to._id,
+        sender: req.user._id,
+        ticket: ticket._id,
+        type: "comment",
+        message: notificationMessage,
+      });
+
       io.to(ticket.assigned_to._id.toString()).emit("newComment", {
         message: notificationMessage,
         ticket,
@@ -300,6 +346,15 @@ export const addAttachment = async (req, res, next) => {
     });
 
     if (!ticket.created_by._id.equals(req.user._id)) {
+      // Save to persistence
+      await createNotificationService({
+        recipient: ticket.created_by._id,
+        sender: req.user._id,
+        ticket: ticket._id,
+        type: "attachment",
+        message: notificationMessage,
+      });
+
       io.to(ticket.created_by._id.toString()).emit("attachmentAdded", {
         message: notificationMessage,
         ticket,
@@ -308,6 +363,15 @@ export const addAttachment = async (req, res, next) => {
     }
 
     if (ticket.assigned_to && !ticket.assigned_to._id.equals(req.user._id)) {
+      // Save to persistence
+      await createNotificationService({
+        recipient: ticket.assigned_to._id,
+        sender: req.user._id,
+        ticket: ticket._id,
+        type: "attachment",
+        message: notificationMessage,
+      });
+
       io.to(ticket.assigned_to._id.toString()).emit("attachmentAdded", {
         message: notificationMessage,
         ticket,

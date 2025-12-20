@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RIGHT_DRAWER_TYPES } from "../utils/globalConstantUtil";
 import NotificationBodyRightDrawer from "../components/common/NotificationBodyRightDrawer";
 import { closeRightDrawer } from "../redux/slices/rightDrawerSlice";
-import { clearNotifications } from "../redux/slices/notificationSlice";
+import { markNotificationsAsSeen } from "../redux/slices/notificationSlice";
 import ChatDrawerBody from "../components/common/ChatDrawerBody";
 
 function RightSidebar() {
@@ -16,7 +16,9 @@ function RightSidebar() {
   );
 
   const close = (e) => {
-    header === "Notifications" && dispatch(clearNotifications());
+    if (header === "Notifications") {
+      dispatch(markNotificationsAsSeen());
+    }
     dispatch(closeRightDrawer(e));
   };
 
