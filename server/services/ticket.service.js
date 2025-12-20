@@ -25,15 +25,7 @@ export const createTicketService = async (data, userId, file, baseUrl) => {
     let attachments = [];
 
     if (file) {
-        // Construct the file URL logic
-        // We need to know the uploads directory path relative to this file? 
-        // The original code used __dirname relative to controller.
-        // This service is in services/, controller in controllers/.
-        // uploads is in server/uploads.
-        // Let's passed the full fileUrl from controller to avoid path complexity here or handle it simply.
-        // Actually, logic for URL construction is "business logic"? Or "presentation logic"?
-        // Let's keep URL construction in controller for now or pass parameters.
-        const fileUrl = `${baseUrl}/uploads/${file.filename}`;
+        const fileUrl = `${baseUrl}/uploads/ticketAttachments/${file.filename}`;
         attachments.push(fileUrl);
     }
 
@@ -289,7 +281,7 @@ export const addAttachmentService = async (id, file, baseUrl) => {
         throw error;
     }
 
-    const fileUrl = `${baseUrl}/uploads/${file.filename}`;
+    const fileUrl = `${baseUrl}/uploads/ticketAttachments/${file.filename}`;
     ticket.attachments.push(fileUrl);
 
     await ticket.save();
@@ -322,7 +314,7 @@ export const deleteAttachmentService = async (id, attachmentIndex) => {
     // Wait, createTicketService used: `${baseUrl}/uploads/${file.filename}`
     // So the file is directly in uploads/.
 
-    const filePath = path.join(__dirname, "../uploads", filename);
+    const filePath = path.join(__dirname, "../../uploads/ticketAttachments", filename);
 
     if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);

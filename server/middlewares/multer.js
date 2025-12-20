@@ -59,20 +59,20 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    const userId = req.params.id;
-    const ticketId = req.params.id;
+    console.log("Multer filename req.params:", req.params);
+    console.log("Multer filename req.user:", req.user?._id);
+
+    const id = req.params.id || req.user?._id || "unknown";
+    const timestamp = Date.now();
+    const extension = path.extname(file.originalname);
 
     let filename = "";
 
     if (file.fieldname === "profileImage") {
-      filename = `profile-${userId}-${Date.now()}${path.extname(
-        file.originalname
-      )}`;
+      filename = `profile-${id}-${timestamp}${extension}`;
       console.log("Multer: Profile image filename:", filename);
     } else if (file.fieldname === "attachment") {
-      filename = `attachment-${ticketId}-${Date.now()}${path.extname(
-        file.originalname
-      )}`;
+      filename = `attachment-${id}-${timestamp}${extension}`;
       console.log("Multer: Ticket attachment filename:", filename);
     } else {
       console.log("Multer: Unknown fieldname:", file.fieldname);

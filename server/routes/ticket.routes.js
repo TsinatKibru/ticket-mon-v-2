@@ -60,6 +60,10 @@ ticketRouter.delete("/:id", authorize(["admin"]), deleteTicket);
 // Add route for uploading attachments
 ticketRouter.post(
   "/:id/attachments",
+  (req, res, next) => {
+    console.log("Routes: POST /:id/attachments - id:", req.params.id);
+    next();
+  },
   authorize(["user", "admin", "support_agent"]),
   upload.single("attachment"),
   addAttachment

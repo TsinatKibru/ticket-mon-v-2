@@ -15,7 +15,8 @@ import {
   assignTicketService,
   addCommentService,
   deleteAttachmentService,
-  autoAssignTicketService
+  autoAssignTicketService,
+  addAttachmentService,
 } from "../services/ticket.service.js";
 import { io } from "../app.js";
 import { generateNotificationMessage } from "../utils/notifications.util.js";
@@ -275,6 +276,13 @@ export const deleteTicket = async (req, res, next) => {
 
 export const addAttachment = async (req, res, next) => {
   try {
+    console.log("Controller addAttachment req.params.id:", req.params.id);
+    console.log("Controller addAttachment req.file:", req.file ? req.file.filename : "undefined");
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+
     const baseUrl = `${req.protocol}://${req.get("host")}`;
     const { ticket, fileUrl } = await addAttachmentService(
       req.params.id,

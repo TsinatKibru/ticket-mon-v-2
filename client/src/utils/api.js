@@ -132,6 +132,7 @@ export const uploadAttachment = async (ticketId, file) => {
     return response.data.data;
   } catch (error) {
     console.error("Error uploading attachment:", error);
+    throw error;
   }
 };
 
@@ -143,6 +144,7 @@ export const deleteAttachment = async (ticketId, attachmentIndex) => {
     return response.data.data;
   } catch (error) {
     console.error("Error deleting attachment:", error);
+    throw error;
   }
 };
 

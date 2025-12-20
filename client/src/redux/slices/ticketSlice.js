@@ -36,6 +36,7 @@ const ticketSlice = createSlice({
     //   }
     // },
     updateTicket: (state, action) => {
+      if (!action.payload?._id) return;
       const index = state.tickets.findIndex(
         (ticket) => ticket._id === action.payload._id
       );

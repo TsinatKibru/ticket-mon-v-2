@@ -153,7 +153,7 @@ function AttachmentsPreview({ attachments, ticketId, status }) {
   };
 
   const handleDelete = async (index) => {
-    toast.warn(
+    toast(
       <div>
         <p>Are you sure you want to delete this attachment?</p>
         <button
@@ -188,10 +188,7 @@ function AttachmentsPreview({ attachments, ticketId, status }) {
         </button>
       </div>,
       {
-        closeOnClick: false,
-        autoClose: false,
-        draggable: false,
-        hideProgressBar: true,
+        duration: Infinity,
       }
     );
   };
