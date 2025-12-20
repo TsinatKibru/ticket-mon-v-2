@@ -162,7 +162,7 @@ const TicketActions = ({
       {showActions && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 mt-2 w-56 rounded-xl shadow-2xl glass-effect border-white/10 z-50 overflow-hidden"
+          className="absolute right-0 mt-2 w-56 rounded-xl shadow-2xl glass-effect border-base-content/10 z-50 overflow-hidden"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"

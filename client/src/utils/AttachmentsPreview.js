@@ -201,7 +201,7 @@ function AttachmentsPreview({ attachments, ticketId, status }) {
       {attachments.map((attachment, index) => (
         <div
           key={index}
-          className="relative group flex flex-col items-center p-2 bg-white dark:bg-transparent rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+          className="relative group flex flex-col items-center p-2 bg-base-content/5 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
         >
           {/* Attachment Preview */}
           {isImage(attachment) ? (

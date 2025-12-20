@@ -46,7 +46,7 @@
 }
 
 [data-theme='business'] .text-base-content {
-    color: #fff !important;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 [data-theme='business'] .stat-title {
@@ -82,8 +82,8 @@ body {
 [data-theme='business'] .input,
 [data-theme='business'] .select,
 [data-theme='business'] .textarea {
-    background-color: rgba(255, 255, 255, 0.03) !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
     color: #fff !important;
 }
 
@@ -135,7 +135,7 @@ body {
 }
 
 .premium-sidebar .text-white {
-    color: #fff !important;
+    color: #fff;
 }
 
 .logo-glow {
@@ -185,30 +185,50 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
 }
+
+/* Premium Native Variables */
+:root {
+    --premium-bg: #f8fafc;
+    --premium-bg-gradient: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.01) 0%, transparent 100%);
+    --premium-card-bg: rgba(255, 255, 255, 0.8);
+    --premium-card-border: rgba(0, 0, 0, 0.05);
+    --premium-card-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+    --premium-text-gradient: linear-gradient(to bottom, #0f172a 0%, #475569 100%);
+}
+
+[data-theme='business'] {
+    --premium-bg: #0c0d10;
+    --premium-bg-gradient: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
+    --premium-card-bg: rgba(255, 255, 255, 0.02);
+    --premium-card-border: rgba(255, 255, 255, 0.08);
+    --premium-card-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+    --premium-text-gradient: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0.6) 100%);
+}
+
 /* minimalist premium Styles */
 .minimal-bg {
-  background-color: #0c0d10;
-  background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 100%);
+    background-color: var(--premium-bg);
+    background-image: var(--premium-bg-gradient);
 }
 
 .minimal-card {
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+    background: var(--premium-card-bg);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--premium-card-border);
+    box-shadow: var(--premium-card-shadow);
 }
 
 .subtle-edge {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--premium-card-border);
 }
 
 .typography-premium {
-  letter-spacing: -0.02em;
-  font-feature-settings: "cv02", "cv05", "cv11";
+    letter-spacing: -0.02em;
+    font-feature-settings: "cv02", "cv05", "cv11";
 }
 
 .mono-gradient-text {
-  background: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0.6) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+    background: var(--premium-text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
