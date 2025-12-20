@@ -54,6 +54,13 @@ export const getTicketsService = async (userId, role) => {
     let query = {};
     if (role === "user") {
         query = { created_by: userId };
+    } else if (role === "support_agent") {
+        query = {
+            $or: [
+                { created_by: userId },
+                { assigned_to: userId }
+            ]
+        };
     }
 
     const tickets = await Ticket.find(query)
