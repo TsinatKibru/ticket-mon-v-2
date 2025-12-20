@@ -92,7 +92,7 @@ function Login() {
                   type="email"
                   defaultValue={loginObj.email}
                   updateType="email"
-                  labelTitle="Professional Email"
+                  labelTitle="Email"
                   updateFormValue={updateFormValue}
                 />
 
@@ -136,9 +136,9 @@ function Login() {
               <div className="text-center">
                 <p className="text-base-content/30 text-sm font-medium">
                   New member?{" "}
-                  <Link to="/register">
+                  <Link to="/login#">
                     <span className="text-base-content hover:underline transition-all">
-                      Create an account
+                      Contact Admin
                     </span>
                   </Link>
                 </p>
