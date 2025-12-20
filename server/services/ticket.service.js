@@ -57,6 +57,7 @@ export const getTicketsService = async (userId, role) => {
     }
 
     const tickets = await Ticket.find(query)
+        .sort({ createdAt: -1 })
         .populate("created_by", "name email")
         .populate("assigned_to", "name email")
         .populate({
