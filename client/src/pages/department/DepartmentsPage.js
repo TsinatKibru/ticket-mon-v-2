@@ -72,7 +72,7 @@ const DepartmentsPage = () => {
   };
 
   return (
-    <div className="p-0 md:p-6">
+    <div className="p-4 md:p-6 space-y-6 min-h-screen">
       {isFormOpen ? (
         <DepartmentForm
           department={selectedDepartment}
