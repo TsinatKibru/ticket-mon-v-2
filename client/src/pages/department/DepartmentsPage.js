@@ -21,6 +21,7 @@ const DepartmentsPage = () => {
     (state) => state.departments
   );
   const { users } = useSelector((state) => state.user);
+  const { user: currentUser } = useSelector((state) => state.auth);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
 
@@ -87,6 +88,7 @@ const DepartmentsPage = () => {
           onAddDepartment={handleAddDepartment}
           onEditDepartment={handleEditDepartment}
           onDeleteDepartment={handleDeleteDepartment}
+          currentUser={currentUser}
         />
       )}
     </div>

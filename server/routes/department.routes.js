@@ -15,7 +15,7 @@ const departmentRouter = Router();
 departmentRouter.post("/", authorize(["admin"]), createDepartment);
 departmentRouter.get(
   "/",
-  authorize(["admin", "support_agent"]),
+  authorize(["admin", "support_agent", "user"]),
   getDepartments
 );
 departmentRouter.get(

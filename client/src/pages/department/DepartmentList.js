@@ -13,10 +13,13 @@ export function DepartmentList({
   onAddDepartment,
   onEditDepartment,
   onDeleteDepartment,
+  currentUser,
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const dispatch = useDispatch();
+
+  const isAdmin = currentUser?.role === "admin";
 
   useEffect(() => {
     // if (status === "failed" && error) {
@@ -62,12 +65,14 @@ export function DepartmentList({
                 Manage your departments here
               </p>
             </div>
-            <button
-              onClick={onAddDepartment}
-              className="btn btn-primary gap-2 w-full sm:w-auto"
-            >
-              <Plus size={20} /> <span>Create Department</span>
-            </button>
+            {isAdmin && (
+              <button
+                onClick={onAddDepartment}
+                className="btn btn-primary gap-2 w-full sm:w-auto"
+              >
+                <Plus size={20} /> <span>Create Department</span>
+              </button>
+            )}
           </div>
 
           {error && (
@@ -101,7 +106,7 @@ export function DepartmentList({
                 <th>Description</th>
                 <th>Members</th>
                 <th>Algorithm</th>
-                <th className="text-right">Actions</th>
+                {isAdmin && <th className="text-right">Actions</th>}
               </tr>
             </thead>
             <tbody>
@@ -120,12 +125,14 @@ export function DepartmentList({
                     <td className="py-3">
                       <div className="skeleton h-4 w-20"></div>
                     </td>
-                    <td className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <div className="skeleton h-8 w-8 rounded-full"></div>
-                        <div className="skeleton h-8 w-8 rounded-full"></div>
-                      </div>
-                    </td>
+                    {isAdmin && (
+                      <td className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <div className="skeleton h-8 w-8 rounded-full"></div>
+                          <div className="skeleton h-8 w-8 rounded-full"></div>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))
                 : filteredDepartments.map((department) => (
@@ -151,22 +158,24 @@ export function DepartmentList({
                     <td className="text-base-content/60">
                       {department.assignmentAlgorithm || "Round Robin"}
                     </td>
-                    <td className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          onClick={() => onEditDepartment(department)}
-                          className="btn btn-ghost btn-sm text-primary"
-                        >
-                          <Pencil size={18} />
-                        </button>
-                        <button
-                          onClick={() => onDeleteDepartment(department._id)}
-                          className="btn btn-ghost btn-sm text-error"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
+                    {isAdmin && (
+                      <td className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => onEditDepartment(department)}
+                            className="btn btn-ghost btn-sm text-primary"
+                          >
+                            <Pencil size={18} />
+                          </button>
+                          <button
+                            onClick={() => onDeleteDepartment(department._id)}
+                            className="btn btn-ghost btn-sm text-error"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
             </tbody>
@@ -185,7 +194,7 @@ export function DepartmentList({
                 ? "Get started by creating your first department!"
                 : "No departments match your search criteria."}
             </p>
-            {departments.length === 0 && (
+            {departments.length === 0 && isAdmin && (
               <button
                 onClick={onAddDepartment}
                 className="mt-4 btn btn-primary gap-2"
