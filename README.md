@@ -1,146 +1,125 @@
-# Ticket-Mon: A Ticket Management System
+# Ticket-Mon 🎫
 
-Ticket-Mon is a full-stack ticket management application designed to streamline the process of creating, managing, and resolving tickets. It features a Node.js backend and a React frontend, with real-time communication powered by Socket.IO. The application supports role-based access control, real-time notifications, and ticket assignment algorithms for efficient workload distribution.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![React](https://img.shields.io/badge/Frontend-React-61dafb.svg)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Backend-Node.js-339933.svg)](https://nodejs.org/)
 
-## Features
+**Ticket-Mon** is a powerful, full-stack ticket management system designed for modern support teams. It streamlines ticket creation, automates workflows, and provides real-time updates to ensure fast and efficient issue resolution.
 
-### Core Features
+---
 
-#### User Authentication and Authorization:
-- Sign up, sign in, and sign out functionality.
-- Role-based access control (Admin, Agent, User).
-- JWT-based authentication for secure API access.
+## 🚀 Key Features
 
-#### Ticket Management:
-- Create, update, and delete tickets.
-- Assign tickets to agents based on department algorithms (Round Robin, Least Recently Assigned, Load Balancing).
-- Track ticket status (Open, In Progress, Resolved) and priority (Low, Medium, High).
+### 🛠️ Core Management
+- **Dynamic Categories**: Centralized category management system for technical, billing, sales, and custom support areas.
+- **Department Routing**: Organize users into departments with specific ticket handling logic.
+- **Role-Based Access**: Granular permissions for Admins, Agents, and Users.
 
-#### Real-Time Communication:
-- Real-time chat threads for ticket comments and replies.
-- Instant notifications for ticket updates and new messages.
+### 🤖 Workflow Automation
+- **Keyword Triggers**: Automatically assign or update tickets based on keywords in the title or description.
+- **On-Event Rules**: Execute actions (Assign, Set Priority, Set Status) triggered by creation or property changes.
+- **Intelligent Assignment**: Supports algorithms like **Round Robin**, **Least Recently Assigned**, and **Load Balancing**.
 
-#### Department Management:
-- Create and manage departments.
-- Assign users to departments.
-- Define ticket assignment algorithms for each department.
+### 💬 Real-Time Collaboration
+- **Live Chat Threads**: Threaded comments for internal and external communication.
+- **Socket Notifications**: Instant in-app popups and "bell" notifications for assignments and updates.
+- **Email Integration**: Automated email alerts for ticket lifecycle events.
 
-#### File Attachments:
-- Upload and manage attachments for tickets.
-- Automatic cleanup of attachments when a ticket is deleted.
+### 📎 Multimedia Support
+- **File Attachments**: Seamlessly attach documents and images to support requests.
+- **Rich Dashboard**: Visual data representation using Chart.js for ticket trends and team performance.
 
-#### Comments and Replies:
-- Add comments to tickets.
-- Reply to comments in a threaded fashion.
-- Track creation dates for comments and replies.
+---
 
-## Technologies Used
+## 🛠️ Tech Stack
 
-### Backend
-- **Node.js**: Runtime environment.
-- **Express.js**: Web framework for building RESTful APIs.
-- **MongoDB**: Database for storing tickets, users, departments, and comments.
-- **Socket.IO**: Real-time communication for chat and notifications.
-- **JWT**: JSON Web Tokens for authentication.
-- **Bcrypt**: Password hashing for secure storage.
-- **Multer**: File upload handling.
+- **Frontend**: [React](file:///client/src/), [Redux Toolkit](file:///client/src/redux/), [Tailwind CSS](file:///client/tailwind.config.js), [DaisyUI](https://daisyui.com/)
+- **Backend**: [Node.js](file:///server/app.js), [Express](https://expressjs.com/), [Socket.IO](https://socket.io/)
+- **Database**: [MongoDB](https://www.mongodb.com/) with [Mongoose](file:///server/models/)
+- **Auth**: JWT (JSON Web Tokens) & Bcrypt
 
-### Frontend
-- **React**: Frontend library for building the user interface.
-- **React Router**: Client-side routing.
-- **Tailwind CSS**: Utility-first CSS framework for styling.
-- **DaisyUI**: Tailwind CSS component library for pre-built UI components.
-- **Redux**: State management for global application state.
-- **React Redux**: Official React bindings for Redux.
-- **Redux Toolkit**: Simplifies Redux setup and state management.
-- **Socket.IO Client**: Real-time communication with the backend.
-- **React Notifications**: Display notifications to users.
-- **React Toastify**: Toast notifications for user feedback.
-- **Chart.js**: Data visualization for charts and graphs.
-- **Lucide React**: Icon library for React.
-- **Date-fns**: Date utility library for handling dates.
+---
 
-## Folder Structure
+## 📂 Project Structure
 
-```plaintext
+```bash
 ticket-mon/
-├── client/                  # React frontend
-│   ├── public/              # Static assets
-│   ├── src/                 # Source code
-│   │   ├── components/      # Reusable UI components
-│   │   ├── containers/      # Container components
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── pages/           # Page components
-│   │   ├── redux/           # Redux store, slices, and actions
-│   │   ├── utils/           # Utility functions
-│   │   ├── App.js           # Main application component
-│   │   ├── index.js         # Entry point
-│   │   └── Root.js          # Root component with Redux and Router
-│   ├── tailwind.config.js   # Tailwind CSS configuration
-│   └── package.json         # Frontend dependencies
-├── server/                  # Node.js backend
-│   ├── config/              # Environment variables and configurations
-│   ├── controllers/         # Business logic for routes
-│   ├── database/            # MongoDB connection and models
-│   ├── middlewares/         # Custom middleware (e.g., authentication, rate limiting)
-│   ├── routes/              # API routes
-│   ├── uploads/             # File uploads storage
-│   ├── app.js               # Main application file
-│   └── server.js            # HTTP and Socket.IO server setup
+├── client/              # React application (Vite/CRA)
+│   ├── src/components/  # UI Components & Layouts
+│   ├── src/pages/       # Dashboard, Tickets, Automation, Settings
+│   └── src/redux/       # State management slices
+├── server/              # Node.js / Express backend
+│   ├── controllers/     # API logic handlers
+│   ├── models/          # Mongoose schemas (Ticket, User, Rule)
+│   ├── services/        # Business logic (Automation, Notification)
+│   └── routes/          # API endpoint definitions
+└── README.md            # You are here!
 ```
 
-## Getting Started
+---
+
+## 🚦 Getting Started
 
 ### Prerequisites
-- Node.js (v16 or higher)
-- MongoDB (local or cloud instance)
-- Git
+
+- **Node.js**: v18.0.0+
+- **MongoDB**: v6.0+ (Running locally or via Atlas)
+- **Git**
 
 ### Installation
 
-#### Clone the Repository:
-```bash
-git clone https://github.com/your-username/ticket-mon.git
-cd ticket-mon
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/ticket-mon.git
+   cd ticket-mon
+   ```
 
-#### Install Dependencies:
+2. **Setup Backend**
+   ```bash
+   cd server
+   npm install
+   # Create .env.development.local with:
+   # PORT=5500
+   # DB_URI=mongodb://localhost:27017/ticketing
+   # JWT_SECRET=your_secret_here
+   npm run dev
+   ```
 
-##### Backend:
-```bash
-cd server
-npm install
-```
+3. **Setup Frontend**
+   ```bash
+   cd ../client
+   npm install
+   npm start
+   ```
 
-##### Frontend:
-```bash
-cd ../client
-npm install
-```
+---
 
-#### Set Up Environment Variables:
-Create a `.env` file in the `server` folder:
+## 📖 Usage Examples
 
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/ticket-mon
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=1d
-```
+### Creating an Automation Rule
+1. Navigate to **Automation** page.
+2. Click **Create New Rule**.
+3. Set Trigger to `On Ticket Create`.
+4. Add Condition: `Subject contains keyword "hardware"`.
+5. Add Action: `Assign to "Support Agent X"`.
 
-### Start the Application:
+---
 
-#### Backend:
-```bash
-cd server
-npm run dev
-```
+## 🆘 Support & Documentation
 
-#### Frontend:
-```bash
-cd ../client
-npm start
-```
+- **Issues**: Report bugs or request features via the [GitHub Issues](https://github.com/your-username/ticket-mon/issues) page.
+- **Contributions**: Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-### Access the Application:
-Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+---
+
+## 👥 Maintainers
+
+- **Lead Developer**: Ticket-Mon Team
+- **Contributors**: [View Full List](https://github.com/your-username/ticket-mon/graphs/contributors)
+
+---
+
+## ⚖️ License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
