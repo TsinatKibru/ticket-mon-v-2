@@ -56,6 +56,17 @@ const storage = multer.diskStorage({
       return cb(new Error("Unknown fieldname"));
     }
 
+    // Ensure directory exists
+    try {
+      if (!fs.existsSync(uploadPath)) {
+        fs.mkdirSync(uploadPath, { recursive: true });
+        console.log("Multer: Created directory:", uploadPath);
+      }
+    } catch (err) {
+      console.error("Multer: Error creating directory:", err);
+      return cb(err);
+    }
+
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
